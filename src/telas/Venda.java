@@ -29,40 +29,25 @@ public class Venda extends javax.swing.JFrame
     {
         initComponents();
         factura.setModel(new javax.swing.table.DefaultTableModel(
-            new Object[][]
-            {
-            },
-            new String[]
-            {
-                "ID", "Nome", "Preço", "Quantidade", "Total"
-            }
+            new Object[][]{},
+            new String[]{"ID", "Nome", "Preço", "Quantidade", "Total"}
         ));
 
         productos1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object[][]
-            {
-            },
-            new String[]
-            {
-                "ID", "Nome", "Categoria", "Preço"
-            }
+            new Object[][]{},
+            new String[]{"ID", "Nome", "Categoria", "Preço", "Quantidade em Estoque"}
         ));
 
         pnome.setEditable(false);
         pPreco.setEditable(false);
         vendedor.setEditable(false);
 
-        //método para exibir os dados na tabela
         exibirDadosTabela();
 
-        //Metodo para exibir nas textbox
-        productos1.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
+        productos1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int selectedRow = productos1.getSelectedRow();
-                if (selectedRow != -1)
-                {
+                if (selectedRow != -1) {
                     DefaultTableModel model = (DefaultTableModel) productos1.getModel();
                     String nomeProduto = model.getValueAt(selectedRow, 1).toString();
                     String preco = model.getValueAt(selectedRow, 3).toString();
@@ -75,8 +60,7 @@ public class Venda extends javax.swing.JFrame
     
     
 
-    private void inserirFaturaNoBanco()
-    {
+    private void inserirFaturaNoBanco() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
@@ -84,18 +68,15 @@ public class Venda extends javax.swing.JFrame
         DefaultTableModel modelFatura = (DefaultTableModel) factura.getModel();
 
         double totalGlobal = 0.0;
-        for (int i = 0; i < modelFatura.getRowCount(); i++)
-        {
+        for (int i = 0; i < modelFatura.getRowCount(); i++) {
             totalGlobal += (double) modelFatura.getValueAt(i, 4);
         }
 
-        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword))
-        {
-            con.setAutoCommit(false); // Iniciar transação
+        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword)) {
+            con.setAutoCommit(false);
 
             String sql = "INSERT INTO factura (nome_vendedor, data_emissao, total) VALUES (?, ?, ?)";
-            try (PreparedStatement stmt = con.prepareStatement(sql))
-            {
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 String nomeVendedor = vendedor.getText();
                 LocalDate dataEmissao = LocalDate.now();
 
@@ -104,51 +85,40 @@ public class Venda extends javax.swing.JFrame
                 stmt.setDouble(3, totalGlobal);
                 stmt.executeUpdate();
 
-                con.commit(); // Commit transação
+                con.commit();
                 JOptionPane.showMessageDialog(null, "Fatura inserida com sucesso.");
-            }
-            catch (SQLException e)
-            {
-                con.rollback(); // Rollback transação em caso de erro
+            } catch (SQLException e) {
+                con.rollback();
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Erro ao inserir fatura no banco de dados.");
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados.");
         }
     }
 
-    private void exibirDadosTabela()
-    {
+    private void exibirDadosTabela() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
 
-        String sql = "SELECT id_produto, nome_produto, categoria, preco FROM produtos";
+        String sql = "SELECT id_produto, nome_produto, categoria, preco, quantidade FROM produtos";
 
-        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql))
-        {
+        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             DefaultTableModel model = (DefaultTableModel) productos1.getModel();
-            model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados
+            model.setRowCount(0);
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int idProduto = rs.getInt("id_produto");
                 String nomeProduto = rs.getString("nome_produto");
                 String categoria = rs.getString("categoria");
                 double preco = rs.getDouble("preco");
-                model.addRow(new Object[]
-                {
-                    idProduto, nomeProduto, categoria, preco
-                });
+                int quantidade = rs.getInt("quantidade");
+                model.addRow(new Object[]{idProduto, nomeProduto, categoria, preco, quantidade});
             }
 
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -163,6 +133,7 @@ public class Venda extends javax.swing.JFrame
     private void initComponents()
     {
 
+        jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         productos1 = new javax.swing.JTable();
@@ -184,6 +155,8 @@ public class Venda extends javax.swing.JFrame
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+
+        jLabel9.setText("jLabel9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 51, 51));
@@ -333,64 +306,82 @@ public class Venda extends javax.swing.JFrame
     private void adicionarAFacturaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_adicionarAFacturaActionPerformed
     {//GEN-HEADEREND:event_adicionarAFacturaActionPerformed
         // TODO add your handling code here
-    // Obter os valores dos campos
     String nomeProduto = pnome.getText();
-    String precoText = pPreco.getText();
-    String quantidadeText = jTextField4.getText();
-    
-    // Verificar se algum campo está vazio
-    if (nomeProduto.isEmpty() || precoText.isEmpty() || quantidadeText.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Verificar se a quantidade é válida
-    int quantidade;
-    try {
-        quantidade = Integer.parseInt(quantidadeText);
-        if (quantidade <= 0) {
-            JOptionPane.showMessageDialog(this, "Por favor, insira uma quantidade válida (maior que zero).", "Erro", JOptionPane.ERROR_MESSAGE);
+        String precoText = pPreco.getText();
+        String quantidadeText = jTextField4.getText();
+
+        if (nomeProduto.isEmpty() || precoText.isEmpty() || quantidadeText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para a quantidade.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Verificar se o preço é válido
-    double preco;
-    try {
-        preco = Double.parseDouble(precoText);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o preço.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
 
-    // Obter o ID do produto a partir da tabela de produtos
-    int selectedRow = productos1.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Por favor, selecione um produto da tabela.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    DefaultTableModel modelProdutos = (DefaultTableModel) productos1.getModel();
-    int idProduto = (int) modelProdutos.getValueAt(selectedRow, 0);
+        int quantidade;
+        try {
+            quantidade = Integer.parseInt(quantidadeText);
+            if (quantidade <= 0) {
+                JOptionPane.showMessageDialog(this, "Por favor, insira uma quantidade válida (maior que zero).", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para a quantidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // Calcular o total
-    double total = preco * quantidade;
+        double preco;
+        try {
+            preco = Double.parseDouble(precoText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o preço.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // Adicionar os valores na tabela "factura"
-    DefaultTableModel modelFactura = (DefaultTableModel) factura.getModel();
-    modelFactura.addRow(new Object[]{idProduto, nomeProduto, preco, quantidade, total});
+        int selectedRow = productos1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um produto da tabela.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        DefaultTableModel modelProdutos = (DefaultTableModel) productos1.getModel();
+        int idProduto = (int) modelProdutos.getValueAt(selectedRow, 0);
+        int quantidadeEmEstoque = (int) modelProdutos.getValueAt(selectedRow, 4);
 
-    // Atualizar o total global
-    double totalGlobal = 0.0;
-    for (int i = 0; i < modelFactura.getRowCount(); i++) {
-        totalGlobal += (double) modelFactura.getValueAt(i, 4);
-    }
-    jLabel2.setText(totalGlobal + " KZS");
+        if (quantidade > quantidadeEmEstoque) {
+            JOptionPane.showMessageDialog(this, "Quantidade insuficiente em estoque.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double total = preco * quantidade;
+
+        DefaultTableModel modelFactura = (DefaultTableModel) factura.getModel();
+        modelFactura.addRow(new Object[]{idProduto, nomeProduto, preco, quantidade, total});
+
+        double totalGlobal = 0.0;
+        for (int i = 0; i < modelFactura.getRowCount(); i++) {
+            totalGlobal += (double) modelFactura.getValueAt(i, 4);
+        }
+        jLabel2.setText(totalGlobal + " KZS");
+
+        atualizarEstoque(idProduto, quantidadeEmEstoque - quantidade);
 
     }//GEN-LAST:event_adicionarAFacturaActionPerformed
 
+    private void atualizarEstoque(int idProduto, int novaQuantidade) {
+        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+        String dbUser = "root";
+        String dbPassword = "123456";
+
+        String sql = "UPDATE produtos SET quantidade = ? WHERE id_produto = ?";
+
+        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, novaQuantidade);
+            stmt.setInt(2, idProduto);
+            stmt.executeUpdate();
+            exibirDadosTabela();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar o estoque.");
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -454,6 +445,7 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

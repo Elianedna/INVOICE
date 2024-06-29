@@ -44,9 +44,20 @@ public class Adminstradores extends javax.swing.JFrame
         {
             e.printStackTrace();
         }
-        
+
         mostrarAdm();
         adicionarListenerTabela();
+
+        administradores.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent event)
+            {
+                if (!event.getValueIsAdjusting() && administradores.getSelectedRow() != -1)
+                {
+                    carregarAdmSelecionado();
+                }
+            }
+        });
     }
 
     /**
@@ -56,12 +67,19 @@ public class Adminstradores extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
 
-    
-    public void inserirAdm(String nome, String email, String senha) {
+    public void inserirAdm(String nome, String email, String senha)
+    {
         String sql = "INSERT INTO administradores (nome, email, senha,data_de_criacao ) VALUES (?, ?, ?,?)";
         LocalDate dataAdmissao = LocalDate.now();
-        
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+        if (verificarEmailExistente("administradores", email))
+        {
+            JOptionPane.showMessageDialog(this, "Email já está em uso por um administrador.",
+                "Erro de Inserção", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
             pstmt.setString(1, nome);
             pstmt.setString(2, email);
             pstmt.setString(3, senha);
@@ -72,42 +90,75 @@ public class Adminstradores extends javax.swing.JFrame
 
             // Atualizar a tabela após a inserção do produto
             mostrarAdm();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
     }
 
-    // Método para atualizar a tabela com todos os adms
-   public void mostrarAdm() {
-    String sql = "SELECT id, nome, email, data_de_criacao FROM administradores";
-    try (Statement stmt = con.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-
-        DefaultTableModel model = (DefaultTableModel) administradores.getModel();
-        model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados
-
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String nome = rs.getString("nome");
-            String email = rs.getString("email");
-            Date dataDeCriacao = rs.getDate("data_de_criacao");
-            model.addRow(new Object[]{id, nome, email, dataDeCriacao});
+    public boolean verificarEmailExistente(String tabela, String email)
+    {
+        String sql = "SELECT COUNT(*) FROM " + tabela + " WHERE email = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next())
+            {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
         }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
-}
 
-   
-   private void adicionarListenerTabela() {
-        administradores.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    // Método para atualizar a tabela com todos os adms
+    public void mostrarAdm()
+    {
+        String sql = "SELECT id, nome, email, data_de_criacao FROM administradores";
+        try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql))
+        {
+
+            DefaultTableModel model = (DefaultTableModel) administradores.getModel();
+            model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados
+
+            while (rs.next())
+            {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                String email = rs.getString("email");
+                Date dataDeCriacao = rs.getDate("data_de_criacao");
+                model.addRow(new Object[]
+                {
+                    id, nome, email, dataDeCriacao
+                });
+            }
+
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void adicionarListenerTabela()
+    {
+        administradores.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
             @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting() && administradores.getSelectedRow() != -1) {
+            public void valueChanged(ListSelectionEvent event)
+            {
+                if (!event.getValueIsAdjusting() && administradores.getSelectedRow() != -1)
+                {
                     int selectedRow = administradores.getSelectedRow();
                     Object dataDeCriacao = administradores.getValueAt(selectedRow, 3); // Assumindo que a data está na quarta coluna
-                    if (dataDeCriacao != null) {
+                    if (dataDeCriacao != null)
+                    {
                         Date data = (Date) dataDeCriacao;
                         System.out.println("Data de admissão: " + data);
                         // Você pode adicionar mais lógica aqui se necessário
@@ -116,7 +167,44 @@ public class Adminstradores extends javax.swing.JFrame
             }
         });
     }
-    
+
+    // Método para atualizar produto no banco de dados
+    public void atualizarAdm(int id, String nome, String email, String senha)
+    {
+        String sql = "UPDATE administradores SET nome = ?, email = ?, senha = ? WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, nome);
+            pstmt.setString(2, email);
+            pstmt.setString(3, senha);
+            pstmt.setInt(4, id);
+            pstmt.executeUpdate();
+            System.out.println("Administrador atualizado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Produto Atualizado com Sucesso!!!");
+
+            // Atualizar a tabela após a atualização do produto
+            mostrarAdm();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarAdmSelecionado()
+    {
+        int selectedRow = administradores.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            int id = (int) administradores.getValueAt(selectedRow, 0);
+            String nome = (String) administradores.getValueAt(selectedRow, 1);
+            String email = (String) administradores.getValueAt(selectedRow, 2);
+
+            nomeTxt.setText(nome);
+            emailTxt.setText(email);
+
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
     {
@@ -141,7 +229,6 @@ public class Adminstradores extends javax.swing.JFrame
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -281,19 +368,6 @@ public class Adminstradores extends javax.swing.JFrame
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
         jLabel3.setText("VENDEDORES");
 
-        jLabel2.setBackground(new java.awt.Color(255, 0, 153));
-        jLabel2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel2.setText("PRODUCTOS");
-        jLabel2.setToolTipText("");
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                jLabel2MouseClicked(evt);
-            }
-        });
-
         jLabel11.setBackground(new java.awt.Color(255, 0, 153));
         jLabel11.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 51, 51));
@@ -314,26 +388,16 @@ public class Adminstradores extends javax.swing.JFrame
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3)))
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
                         .addGap(18, 18, 18))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(457, 457, 457)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(458, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,11 +412,6 @@ public class Adminstradores extends javax.swing.JFrame
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(284, 284, 284)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(284, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -402,25 +461,72 @@ public class Adminstradores extends javax.swing.JFrame
 
     private void editarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editarActionPerformed
     {//GEN-HEADEREND:event_editarActionPerformed
-        // TODO add your handling code here:
-        
-        
-        
+        int selectedRow = administradores.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            int id = (int) administradores.getValueAt(selectedRow, 0);
+            String nome = nomeTxt.getText();
+            String email = emailTxt.getText();
+            String senha = senha1.getText();
+            String confirmarSenha = senha2.getText();
+
+            // Verificar se as senhas coincidem
+            if (!senha.equals(confirmarSenha))
+            {
+                JOptionPane.showMessageDialog(this, "As senhas não coincidem. Por favor, verifique e tente novamente.");
+                return;
+            }
+
+            if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!");
+            }
+            else
+            {
+                atualizarAdm(id, nome, email, senha);
+
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Selecione um produto para editar!");
+        }
+
     }//GEN-LAST:event_editarActionPerformed
+
 
     private void apagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_apagarActionPerformed
     {//GEN-HEADEREND:event_apagarActionPerformed
 //        // TODO add your handling code here:
-//        int selectedRow = administradores.getSelectedRow();
-//        if (selectedRow != -1)
-//        {
-//            int idProduto = (int) administradores.getValueAt(selectedRow, 0);
-//            apagarProduto(idProduto);
-//        }
-//        else
-//        {
-//            JOptionPane.showMessageDialog(Productos.this, "Selecione um produto para apagar!");
-//        }
+        int selectedRow = administradores.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            int id = (int) administradores.getValueAt(selectedRow, 0);
+
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja apagar este administrador?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION)
+            {
+                String sql = "DELETE FROM administradores WHERE id = ?";
+
+                try (PreparedStatement pstmt = con.prepareStatement(sql))
+                {
+                    pstmt.setInt(1, id);
+                    pstmt.executeUpdate();
+                    System.out.println("Administrador apagado com sucesso!");
+                    JOptionPane.showMessageDialog(this, "Administrador Apagado com Sucesso!!!");
+
+                    mostrarAdm();
+                }
+                catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Selecione um administrador para apagar!");
+        }
     }//GEN-LAST:event_apagarActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel1MouseClicked
@@ -436,13 +542,6 @@ public class Adminstradores extends javax.swing.JFrame
         new visualizarVendas().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
-
-    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel2MouseClicked
-    {//GEN-HEADEREND:event_jLabel2MouseClicked
-        // TODO add your handling code here:
-        new Productos().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel11MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel11MouseClicked
     {//GEN-HEADEREND:event_jLabel11MouseClicked
@@ -509,7 +608,6 @@ public class Adminstradores extends javax.swing.JFrame
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
