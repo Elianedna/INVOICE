@@ -141,7 +141,7 @@ public class Venda extends javax.swing.JFrame
         factura = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        Pagar = new javax.swing.JButton();
         adicionarAFactura = new javax.swing.JButton();
         vendedor = new javax.swing.JTextField();
         pnome = new javax.swing.JTextField();
@@ -155,6 +155,10 @@ public class Venda extends javax.swing.JFrame
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        PAGAMENTOS = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         jLabel9.setText("jLabel9");
 
@@ -183,7 +187,7 @@ public class Venda extends javax.swing.JFrame
         productos1.setSelectionForeground(new java.awt.Color(0, 51, 51));
         jScrollPane1.setViewportView(productos1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 440, 162));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 300, 440, 162));
 
         factura.setFont(new java.awt.Font("Rockwell Condensed", 1, 14)); // NOI18N
         factura.setModel(new javax.swing.table.DefaultTableModel(
@@ -201,22 +205,29 @@ public class Venda extends javax.swing.JFrame
         ));
         jScrollPane2.setViewportView(factura);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(534, 142, 440, 294));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 130, 440, 294));
 
         jLabel1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 51, 51));
         jLabel1.setText("TOTAL:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 450, 70, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 440, 70, -1));
 
         jLabel2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 51, 51));
         jLabel2.setText("00.0 KZS");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 450, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 440, -1, -1));
 
-        jButton1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 51, 51));
-        jButton1.setText("Pagar");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 510, -1, -1));
+        Pagar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        Pagar.setForeground(new java.awt.Color(0, 51, 51));
+        Pagar.setText("Pagar");
+        Pagar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                PagarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Pagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 500, -1, -1));
 
         adicionarAFactura.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         adicionarAFactura.setForeground(new java.awt.Color(0, 51, 51));
@@ -228,11 +239,11 @@ public class Venda extends javax.swing.JFrame
                 adicionarAFacturaActionPerformed(evt);
             }
         });
-        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 500, -1, -1));
-        jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(296, 142, 179, 37));
-        jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 142, 179, 37));
-        jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 179, 37));
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(296, 230, 179, 37));
+        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 490, -1, -1));
+        jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 130, 179, 37));
+        jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 179, 37));
+        jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 220, 179, 37));
+        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 220, 179, 37));
 
         jButton3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 51, 51));
@@ -244,49 +255,106 @@ public class Venda extends javax.swing.JFrame
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 510, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 500, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
         jLabel3.setText("FACTURA CLIENTE");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 120, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 110, -1, -1));
 
         jLabel4.setBackground(new java.awt.Color(163, 174, 208));
         jLabel4.setFont(new java.awt.Font("Rockwell Condensed", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 51, 51));
         jLabel4.setText("VENDER PRODUCTOS");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, -1, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 51, 51));
         jLabel5.setText("Nome Producto:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, -1, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 51, 51));
         jLabel6.setText("Nome Vendedor:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, -1, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 110, -1, -1));
 
         jLabel7.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 51, 51));
         jLabel7.setText("Preço:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 51, 51));
         jLabel8.setText("Quantidade:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, -1, -1));
 
         jButton2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 51, 51));
         jButton2.setText("FACTURA PRO-FORMA");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 510, 200, 30));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 500, 200, 30));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel10.setBackground(new java.awt.Color(255, 0, 153));
+        jLabel10.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(0, 51, 51));
+        jLabel10.setText("SAIR");
+        jLabel10.setToolTipText("");
+        jLabel10.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel10MouseClicked(evt);
+            }
+        });
+
+        PAGAMENTOS.setBackground(new java.awt.Color(255, 0, 153));
+        PAGAMENTOS.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        PAGAMENTOS.setForeground(new java.awt.Color(0, 51, 51));
+        PAGAMENTOS.setText("PAGAMENTOS");
+        PAGAMENTOS.setToolTipText("");
+        PAGAMENTOS.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                PAGAMENTOSMouseClicked(evt);
+            }
+        });
+
+        jLabel11.setText("jLabel11");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PAGAMENTOS, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(40, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(200, 200, 200)
+                .addComponent(PAGAMENTOS, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(78, 78, 78)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 580));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1019, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1180, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,82 +373,107 @@ public class Venda extends javax.swing.JFrame
 
     private void adicionarAFacturaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_adicionarAFacturaActionPerformed
     {//GEN-HEADEREND:event_adicionarAFacturaActionPerformed
+        // TODO add your handling code 
         // TODO add your handling code here
     String nomeProduto = pnome.getText();
-        String precoText = pPreco.getText();
-        String quantidadeText = jTextField4.getText();
+    String precoText = pPreco.getText();
+    String quantidadeText = jTextField4.getText();
 
-        if (nomeProduto.isEmpty() || precoText.isEmpty() || quantidadeText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+    if (nomeProduto.isEmpty() || precoText.isEmpty() || quantidadeText.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    int quantidade;
+    try {
+        quantidade = Integer.parseInt(quantidadeText);
+        if (quantidade <= 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, insira uma quantidade válida (maior que zero).", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para a quantidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        int quantidade;
-        try {
-            quantidade = Integer.parseInt(quantidadeText);
-            if (quantidade <= 0) {
-                JOptionPane.showMessageDialog(this, "Por favor, insira uma quantidade válida (maior que zero).", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para a quantidade.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    double preco;
+    try {
+        preco = Double.parseDouble(precoText);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o preço.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        double preco;
-        try {
-            preco = Double.parseDouble(precoText);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o preço.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    int selectedRow = productos1.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Por favor, selecione um produto da tabela.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    DefaultTableModel modelProdutos = (DefaultTableModel) productos1.getModel();
+    int idProduto = (int) modelProdutos.getValueAt(selectedRow, 0);
+    int quantidadeEmEstoque = (int) modelProdutos.getValueAt(selectedRow, 4);
 
-        int selectedRow = productos1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione um produto da tabela.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        DefaultTableModel modelProdutos = (DefaultTableModel) productos1.getModel();
-        int idProduto = (int) modelProdutos.getValueAt(selectedRow, 0);
-        int quantidadeEmEstoque = (int) modelProdutos.getValueAt(selectedRow, 4);
+    if (quantidade > quantidadeEmEstoque) {
+        JOptionPane.showMessageDialog(this, "Quantidade insuficiente em estoque.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        if (quantidade > quantidadeEmEstoque) {
-            JOptionPane.showMessageDialog(this, "Quantidade insuficiente em estoque.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    double total = preco * quantidade;
 
-        double total = preco * quantidade;
+    DefaultTableModel modelFactura = (DefaultTableModel) factura.getModel();
+    modelFactura.addRow(new Object[]{idProduto, nomeProduto, preco, quantidade, total});
 
-        DefaultTableModel modelFactura = (DefaultTableModel) factura.getModel();
-        modelFactura.addRow(new Object[]{idProduto, nomeProduto, preco, quantidade, total});
+    double totalGlobal = 0.0;
+    for (int i = 0; i < modelFactura.getRowCount(); i++) {
+        totalGlobal += (double) modelFactura.getValueAt(i, 4);
+    }
+    jLabel2.setText(totalGlobal + " KZS");
 
-        double totalGlobal = 0.0;
-        for (int i = 0; i < modelFactura.getRowCount(); i++) {
-            totalGlobal += (double) modelFactura.getValueAt(i, 4);
-        }
-        jLabel2.setText(totalGlobal + " KZS");
+    // Atualiza o estoque no banco de dados e na tabela
+   // atualizarEstoque(idProduto, quantidadeEmEstoque - quantidade);
 
-        atualizarEstoque(idProduto, quantidadeEmEstoque - quantidade);
 
     }//GEN-LAST:event_adicionarAFacturaActionPerformed
 
-    private void atualizarEstoque(int idProduto, int novaQuantidade) {
-        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
-        String dbUser = "root";
-        String dbPassword = "123456";
+    private void jLabel10MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel10MouseClicked
+    {//GEN-HEADEREND:event_jLabel10MouseClicked
+        // TODO add your handling code here:
+        new LoginAdm().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jLabel10MouseClicked
 
-        String sql = "UPDATE produtos SET quantidade = ? WHERE id_produto = ?";
+    private void PAGAMENTOSMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_PAGAMENTOSMouseClicked
+    {//GEN-HEADEREND:event_PAGAMENTOSMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_PAGAMENTOSMouseClicked
 
-        try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword); PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, novaQuantidade);
-            stmt.setInt(2, idProduto);
-            stmt.executeUpdate();
-            exibirDadosTabela();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar o estoque.");
-        }
-    }
+    private void PagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_PagarActionPerformed
+    {//GEN-HEADEREND:event_PagarActionPerformed
+        // TODO add your handling code here:
+        new Pagamentos().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_PagarActionPerformed
+
+//   private void atualizarEstoque(int idProduto, int novaQuantidade) {
+//    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+//    String dbUser = "root";
+//    String dbPassword = "123456";
+//
+//    String sql = "UPDATE produtos SET quantidade = ? WHERE id_produto = ?";
+//
+//    try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword); PreparedStatement stmt = con.prepareStatement(sql)) {
+//        stmt.setInt(1, novaQuantidade);
+//        stmt.setInt(2, idProduto);
+//        stmt.executeUpdate();
+//
+//        // Atualiza a tabela productos1 na interface
+//        exibirDadosTabela();
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//        JOptionPane.showMessageDialog(null, "Erro ao atualizar a quantidade em estoque.");
+//    }
+//}
     
     /**
      * @param args the command line arguments
@@ -432,12 +525,15 @@ public class Venda extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel PAGAMENTOS;
+    private javax.swing.JButton Pagar;
     private javax.swing.JButton adicionarAFactura;
     private javax.swing.JTable factura;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -447,6 +543,7 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField4;

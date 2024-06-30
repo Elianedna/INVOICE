@@ -30,7 +30,7 @@ public class visualizarVendas extends javax.swing.JFrame
         carregarDadosFactura();
     }
 
-   private void carregarDadosFactura() {
+    private void carregarDadosFactura() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
@@ -40,7 +40,7 @@ public class visualizarVendas extends javax.swing.JFrame
         try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword)) {
             try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
-                DefaultTableModel model = new DefaultTableModel(new Object[] {
+                DefaultTableModel model = new DefaultTableModel(new Object[]{
                     "ID", "Nome Vendedor", "Data Emissão", "Total"
                 }, 0);
 
@@ -49,7 +49,7 @@ public class visualizarVendas extends javax.swing.JFrame
                     String nomeVendedor = rs.getString("nome_vendedor");
                     Date dataEmissao = rs.getDate("data_emissao");
                     double total = rs.getDouble("total");
-                    model.addRow(new Object[] {
+                    model.addRow(new Object[]{
                         idFactura, nomeVendedor, dataEmissao, total
                     });
                 }
@@ -62,6 +62,10 @@ public class visualizarVendas extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados.");
         }
     }
+    
+    
+    
+
    
    private void imprimirRelatorioVendas() {
         DefaultTableModel modelVendas = (DefaultTableModel) productos1.getModel();

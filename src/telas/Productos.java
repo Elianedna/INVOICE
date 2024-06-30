@@ -41,38 +41,17 @@ public class Productos extends javax.swing.JFrame
 
     }
 
-    // Método para atualizar produto no banco de dados
-    public void atualizarProduto(int id, String nome, double preco, String categoria)
-    {
-        String sql = "UPDATE produtos SET nome_produto = ?, categoria = ?, preco = ? WHERE id_produto = ?";
-        try (PreparedStatement pstmt = con.prepareStatement(sql))
-        {
-            pstmt.setString(1, nome);
-            pstmt.setString(2, categoria);
-            pstmt.setDouble(3, preco);
-            pstmt.setInt(4, id);
-            pstmt.executeUpdate();
-            System.out.println("Produto atualizado com sucesso!");
-            JOptionPane.showMessageDialog(this, "Produto Atualizado com Sucesso!!!");
-
-            // Atualizar a tabela após a atualização do produto
-            mostrarProductos();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     // Método para inserir produto no banco de dados
-    public void inserirProduto(String nome, double preco, String categoria)
+    // Método para inserir produto no banco de dados
+    public void inserirProduto(String nome, double preco, String categoria, int quantidade)
     {
-        String sql = "INSERT INTO produtos (nome_produto, categoria, preco) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO produtos (nome_produto, categoria, preco, quantidade) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = con.prepareStatement(sql))
         {
             pstmt.setString(1, nome);
             pstmt.setString(2, categoria);
             pstmt.setDouble(3, preco);
+            pstmt.setInt(4, quantidade);
             pstmt.executeUpdate();
             System.out.println("Produto inserido com sucesso!");
             JOptionPane.showMessageDialog(this, "Produto Adicionado com Sucesso!!!");
@@ -86,25 +65,56 @@ public class Productos extends javax.swing.JFrame
         }
     }
 
+// Método para atualizar produto no banco de dados
+    public void atualizarProduto(int id, String nome, double preco, String categoria, int quantidade)
+    {
+        String sql = "UPDATE produtos SET nome_produto = ?, categoria = ?, preco = ?, quantidade = ? WHERE id_produto = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, nome);
+            pstmt.setString(2, categoria);
+            pstmt.setDouble(3, preco);
+            pstmt.setInt(4, quantidade);
+            pstmt.setInt(5, id);
+            pstmt.executeUpdate();
+            System.out.println("Produto atualizado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Produto Atualizado com Sucesso!!!");
+
+            // Atualizar a tabela após a atualização do produto
+            mostrarProductos();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     // Método para atualizar a tabela com todos os produtos
-    public void mostrarProductos() {
-        String sql = "SELECT id_produto, nome_produto, categoria, preco FROM produtos";
-        try (Connection conn = DriverManager.getConnection(connectionURL, dbUser, dbPassword);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    public void mostrarProductos()
+    {
+        String sql = "SELECT id_produto, nome_produto, categoria, preco, quantidade FROM produtos";
+        try (Connection conn = DriverManager.getConnection(connectionURL, dbUser, dbPassword); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql))
+        {
 
             DefaultTableModel model = (DefaultTableModel) productos1.getModel();
             model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 int idProduto = rs.getInt("id_produto");
                 String nomeProduto = rs.getString("nome_produto");
                 String categoria = rs.getString("categoria");
                 double preco = rs.getDouble("preco");
-                model.addRow(new Object[]{idProduto, nomeProduto, categoria, preco});
+                int quantidade = rs.getInt("quantidade");
+                model.addRow(new Object[]
+                {
+                    idProduto, nomeProduto, categoria, preco, quantidade
+                });
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
     }
@@ -118,10 +128,12 @@ public class Productos extends javax.swing.JFrame
             String nomeProduto = (String) productos1.getValueAt(selectedRow, 1);
             String categoria = (String) productos1.getValueAt(selectedRow, 2);
             double preco = (double) productos1.getValueAt(selectedRow, 3);
+            int quantidade = (int) productos1.getValueAt(selectedRow, 4);
 
             nomeTxt.setText(nomeProduto);
             precoTxt.setText(String.valueOf(preco));
             comboCat.setSelectedItem(categoria);
+            quantidadeTxt.setText(String.valueOf(quantidade));
         }
     }
 
@@ -149,6 +161,9 @@ public class Productos extends javax.swing.JFrame
         jScrollPane2 = new javax.swing.JScrollPane();
         productos1 = new javax.swing.JTable();
         actualizar = new javax.swing.JButton();
+        quantidadeTxt = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -185,8 +200,8 @@ public class Productos extends javax.swing.JFrame
 
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel6.setText("Categoria");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 330, 166, -1));
+        jLabel6.setText("Quantidade");
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 166, -1));
 
         filtro.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         filtro.setForeground(new java.awt.Color(0, 51, 51));
@@ -213,7 +228,7 @@ public class Productos extends javax.swing.JFrame
         jLabel9.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 51, 51));
         jLabel9.setText(" Lista de Productos");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 200, -1, -1));
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 200, -1, -1));
 
         guardar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         guardar.setForeground(new java.awt.Color(0, 102, 102));
@@ -225,7 +240,7 @@ public class Productos extends javax.swing.JFrame
                 guardarActionPerformed(evt);
             }
         });
-        jPanel2.add(guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, -1, 40));
+        jPanel2.add(guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, -1, 40));
 
         editar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         editar.setForeground(new java.awt.Color(0, 51, 51));
@@ -237,7 +252,7 @@ public class Productos extends javax.swing.JFrame
                 editarActionPerformed(evt);
             }
         });
-        jPanel2.add(editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 490, 100, 37));
+        jPanel2.add(editar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 530, 100, 37));
 
         apagar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         apagar.setForeground(new java.awt.Color(153, 0, 0));
@@ -249,7 +264,7 @@ public class Productos extends javax.swing.JFrame
                 apagarActionPerformed(evt);
             }
         });
-        jPanel2.add(apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 550, 100, 38));
+        jPanel2.add(apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 580, 100, 38));
 
         comboCat.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         comboCat.setForeground(new java.awt.Color(0, 51, 51));
@@ -261,20 +276,20 @@ public class Productos extends javax.swing.JFrame
         productos1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][]
             {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String []
             {
-                "ID", "Nome", "Categoria", "Preço"
+                "ID", "Nome", "Categoria", "Preço", "Quantidade"
             }
         ));
         productos1.setRowHeight(29);
         jScrollPane2.setViewportView(productos1);
 
-        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 230, 366, 329));
+        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 230, 410, 329));
 
         actualizar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         actualizar.setForeground(new java.awt.Color(0, 51, 51));
@@ -286,7 +301,14 @@ public class Productos extends javax.swing.JFrame
                 actualizarActionPerformed(evt);
             }
         });
-        jPanel2.add(actualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 570, -1, 37));
+        jPanel2.add(actualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 570, -1, 37));
+        jPanel2.add(quantidadeTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 420, 190, 30));
+
+        jLabel13.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(0, 51, 51));
+        jLabel13.setText("Categoria");
+        jPanel2.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 330, 166, -1));
+        jPanel2.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, -40, -1, -1));
 
         jLabel1.setBackground(new java.awt.Color(255, 0, 153));
         jLabel1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
@@ -376,35 +398,37 @@ public class Productos extends javax.swing.JFrame
     private void guardarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_guardarActionPerformed
     {//GEN-HEADEREND:event_guardarActionPerformed
         // TODO add your handling code here:
+        // TODO add your handling code here:
 
         String nome = nomeTxt.getText();
         String precoText = precoTxt.getText();
         String categoria = comboCat.getSelectedItem().toString();
+        String quantidadeText = quantidadeTxt.getText();
 
         // Verificar se os campos não estão vazios
-        if (nome.isEmpty() || precoText.isEmpty() || categoria.isEmpty())
+        if (nome.isEmpty() || precoText.isEmpty() || categoria.isEmpty() || quantidadeText.isEmpty())
         {
             JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!");
             return;
         }
 
-        // Converter o preço para double
+        // Converter o preço e a quantidade para double e int, respectivamente
         try
         {
             double preco = Double.parseDouble(precoText);
+            int quantidade = Integer.parseInt(quantidadeText);
             // Chamar o método para inserir produto
-            inserirProduto(nome, preco, categoria);
+            inserirProduto(nome, preco, categoria, quantidade);
         }
         catch (NumberFormatException e)
         {
-            JOptionPane.showMessageDialog(this, "Preço deve ser um número!");
+            JOptionPane.showMessageDialog(this, "Preço e quantidade devem ser números!");
         }
     }//GEN-LAST:event_guardarActionPerformed
 
     private void editarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editarActionPerformed
     {//GEN-HEADEREND:event_editarActionPerformed
         // TODO add your handling code here:
-
         int selectedRow = productos1.getSelectedRow();
         if (selectedRow != -1)
         {
@@ -412,8 +436,9 @@ public class Productos extends javax.swing.JFrame
             String nome = nomeTxt.getText();
             String precoText = precoTxt.getText();
             String categoria = comboCat.getSelectedItem().toString();
+            String quantidadeText = quantidadeTxt.getText();
 
-            if (nome.isEmpty() || precoText.isEmpty() || categoria.isEmpty())
+            if (nome.isEmpty() || precoText.isEmpty() || categoria.isEmpty() || quantidadeText.isEmpty())
             {
                 JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!");
             }
@@ -422,11 +447,12 @@ public class Productos extends javax.swing.JFrame
                 try
                 {
                     double preco = Double.parseDouble(precoText);
-                    atualizarProduto(idProduto, nome, preco, categoria);
+                    int quantidade = Integer.parseInt(quantidadeText);
+                    atualizarProduto(idProduto, nome, preco, categoria, quantidade);
                 }
                 catch (NumberFormatException e)
                 {
-                    JOptionPane.showMessageDialog(this, "Preço deve ser um número!");
+                    JOptionPane.showMessageDialog(this, "Preço e quantidade devem ser números!");
                 }
             }
         }
@@ -440,10 +466,13 @@ public class Productos extends javax.swing.JFrame
     {//GEN-HEADEREND:event_apagarActionPerformed
         // TODO add your handling code here:
         int selectedRow = productos1.getSelectedRow();
-        if (selectedRow != -1) {
+        if (selectedRow != -1)
+        {
             int idProduto = (int) productos1.getValueAt(selectedRow, 0);
             apagarProduto(idProduto);
-        } else {
+        }
+        else
+        {
             JOptionPane.showMessageDialog(Productos.this, "Selecione um produto para apagar!");
         }
     }//GEN-LAST:event_apagarActionPerformed
@@ -453,13 +482,13 @@ public class Productos extends javax.swing.JFrame
         // TODO add your handling code here:
         String filtro = this.filtro.getSelectedItem().toString();
         filtrarProdutos(filtro);
-        
+
     }//GEN-LAST:event_filtroActionPerformed
 
     private void actualizarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_actualizarActionPerformed
     {//GEN-HEADEREND:event_actualizarActionPerformed
         // TODO add your handling code here:
-          mostrarProductos();
+        mostrarProductos();
     }//GEN-LAST:event_actualizarActionPerformed
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel1MouseClicked
@@ -476,46 +505,60 @@ public class Productos extends javax.swing.JFrame
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
-    public void filtrarProdutos(String filtro) {
-    String sql = "SELECT id_produto, nome_produto, categoria, preco FROM produtos WHERE categoria = ?";
-    try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-        pstmt.setString(1, filtro);
-        ResultSet rs = pstmt.executeQuery();
-        
-        DefaultTableModel model = (DefaultTableModel) productos1.getModel();
-        model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados do filtro
-        
-        while (rs.next()) {
-            int idProduto = rs.getInt("id_produto");
-            String nomeProduto = rs.getString("nome_produto");
-            String categoria = rs.getString("categoria");
-            double preco = rs.getDouble("preco");
-            model.addRow(new Object[]{idProduto, nomeProduto, categoria, preco});
-        }
-        
-        rs.close();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-}
-    
-    // Adicione este método na mesma classe onde você definiu o método inserirProduto()
+    public void filtrarProdutos(String filtro)
+    {
+        String sql = "SELECT id_produto, nome_produto, categoria, preco FROM produtos WHERE categoria = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, filtro);
+            ResultSet rs = pstmt.executeQuery();
 
-public void apagarProduto(int idProduto) {
-    String sql = "DELETE FROM produtos WHERE id_produto = ?";
-    try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-        pstmt.setInt(1, idProduto);
-        int rowsDeleted = pstmt.executeUpdate();
-        if (rowsDeleted > 0) {
-            JOptionPane.showMessageDialog(this, "Produto apagado com sucesso!");
-            mostrarProductos(); // Atualizar a tabela após a exclusão
-        } else {
-            JOptionPane.showMessageDialog(this, "Não foi possível apagar o produto!");
+            DefaultTableModel model = (DefaultTableModel) productos1.getModel();
+            model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados do filtro
+
+            while (rs.next())
+            {
+                int idProduto = rs.getInt("id_produto");
+                String nomeProduto = rs.getString("nome_produto");
+                String categoria = rs.getString("categoria");
+                double preco = rs.getDouble("preco");
+                model.addRow(new Object[]
+                {
+                    idProduto, nomeProduto, categoria, preco
+                });
+            }
+
+            rs.close();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        catch (SQLException ex)
+        {
+            ex.printStackTrace();
+        }
     }
-}
+
+    // Adicione este método na mesma classe onde você definiu o método inserirProduto()
+    public void apagarProduto(int idProduto)
+    {
+        String sql = "DELETE FROM produtos WHERE id_produto = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setInt(1, idProduto);
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0)
+            {
+                JOptionPane.showMessageDialog(this, "Produto apagado com sucesso!");
+                mostrarProductos(); // Atualizar a tabela após a exclusão
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Não foi possível apagar o produto!");
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String args[])
     {
@@ -575,6 +618,7 @@ public void apagarProduto(int idProduto) {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -585,8 +629,10 @@ public void apagarProduto(int idProduto) {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField nomeTxt;
     private javax.swing.JTextField precoTxt;
     private javax.swing.JTable productos1;
+    private javax.swing.JTextField quantidadeTxt;
     // End of variables declaration//GEN-END:variables
 }
