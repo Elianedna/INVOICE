@@ -4,6 +4,11 @@
  */
 package telas;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -46,7 +51,7 @@ public class LoginFuncionario extends javax.swing.JFrame
         nomeUser1 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         password1 = new javax.swing.JPasswordField();
-        cadastro1 = new javax.swing.JButton();
+        entrar = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         telaAdm = new javax.swing.JLabel();
@@ -177,24 +182,24 @@ public class LoginFuncionario extends javax.swing.JFrame
         });
         jPanel6.add(password1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 290, 271, 37));
 
-        cadastro1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        cadastro1.setForeground(new java.awt.Color(0, 51, 51));
-        cadastro1.setText("ENTRAR");
-        cadastro1.addMouseListener(new java.awt.event.MouseAdapter()
+        entrar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        entrar.setForeground(new java.awt.Color(0, 51, 51));
+        entrar.setText("ENTRAR");
+        entrar.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                cadastro1MouseClicked(evt);
+                entrarMouseClicked(evt);
             }
         });
-        cadastro1.addActionListener(new java.awt.event.ActionListener()
+        entrar.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                cadastro1ActionPerformed(evt);
+                entrarActionPerformed(evt);
             }
         });
-        jPanel6.add(cadastro1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, -1, -1));
+        jPanel6.add(entrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, -1, -1));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -255,19 +260,7 @@ public class LoginFuncionario extends javax.swing.JFrame
     private void cadastroMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_cadastroMouseClicked
     {//GEN-HEADEREND:event_cadastroMouseClicked
         // TODO add your handling code here:
-        if (this.nomeUser.getText().isEmpty()||password.getText().isEmpty())
-        {
-            JOptionPane.showMessageDialog(null, "Falta Informacoes");
-        }else if(nomeUser.getText().equals("Admin") && password.getText().equals("123456"))
-        {
-            new Productos().setVisible(true);
-            this.dispose();
-        }else
-        {
-            JOptionPane.showMessageDialog(null,"Palavra-Passe ou Utilizador Invalido!!");
-            this.nomeUser.setText("");
-            this.password.setText("");
-        }
+       
     }//GEN-LAST:event_cadastroMouseClicked
 
     private void cadastroActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cadastroActionPerformed
@@ -285,28 +278,61 @@ public class LoginFuncionario extends javax.swing.JFrame
         // TODO add your handling code here:
     }//GEN-LAST:event_password1ActionPerformed
 
-    private void cadastro1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_cadastro1MouseClicked
-    {//GEN-HEADEREND:event_cadastro1MouseClicked
+    private void entrarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_entrarMouseClicked
+    {//GEN-HEADEREND:event_entrarMouseClicked
         // TODO add your handling code here:
-        if (this.nomeUser.getText().isEmpty()||password.getText().isEmpty())
-        {
+         if (this.nomeUser1.getText().isEmpty() || new String(password1.getPassword()).isEmpty()) {
             JOptionPane.showMessageDialog(null, "Falta Informacoes");
-        }else if(nomeUser.getText().equals("Admin") && password.getText().equals("123456"))
-        {
-            new Productos().setVisible(true);
-            this.dispose();
-        }else
-        {
-            JOptionPane.showMessageDialog(null,"Palavra-Passe ou Utilizador Invalido!!");
-            this.nomeUser.setText("");
-            this.password.setText("");
-        }
-    }//GEN-LAST:event_cadastro1MouseClicked
+        } else {
+            String url = "jdbc:mysql://localhost:3306/faturacao";
+            String user = "root";
+            String pwd = "123456";
 
-    private void cadastro1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cadastro1ActionPerformed
-    {//GEN-HEADEREND:event_cadastro1ActionPerformed
+            String sql = "SELECT * FROM vendedores WHERE nome = ? AND senha = ?";
+
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conn = DriverManager.getConnection(url, user, pwd);
+                stmt = conn.prepareStatement(sql);
+
+                stmt.setString(1, this.nomeUser1.getText());
+                stmt.setString(2, new String(this.password1.getPassword()));
+
+                rs = stmt.executeQuery();
+                if (rs.next()) {
+                    new Productos().setVisible(true);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Palavra-Passe ou Utilizador Invalido!!");
+                    this.nomeUser1.setText("");
+                    this.password1.setText("");
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Driver JDBC não encontrado!");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados!");
+            } finally {
+                try {
+                    if (rs != null) rs.close();
+                    if (stmt != null) stmt.close();
+                    if (conn != null) conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_entrarMouseClicked
+
+    private void entrarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_entrarActionPerformed
+    {//GEN-HEADEREND:event_entrarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cadastro1ActionPerformed
+    }//GEN-LAST:event_entrarActionPerformed
 
     private void telaAdmMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_telaAdmMouseClicked
     {//GEN-HEADEREND:event_telaAdmMouseClicked
@@ -366,7 +392,7 @@ public class LoginFuncionario extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cadastro;
-    private javax.swing.JButton cadastro1;
+    private javax.swing.JButton entrar;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

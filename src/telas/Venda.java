@@ -157,8 +157,19 @@ public class Venda extends javax.swing.JFrame
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        PAGAMENTOS = new javax.swing.JLabel();
+        imprimir = new javax.swing.JButton();
+        Troco = new javax.swing.JTextField();
+        Trocol = new javax.swing.JLabel();
+        telefone = new javax.swing.JTextField();
+        pagamentos = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        ValorPago = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        ValorAPagar = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        CadastrarCliente = new javax.swing.JButton();
 
         jLabel9.setText("jLabel9");
 
@@ -187,7 +198,7 @@ public class Venda extends javax.swing.JFrame
         productos1.setSelectionForeground(new java.awt.Color(0, 51, 51));
         jScrollPane1.setViewportView(productos1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 300, 440, 162));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 380, 440, 162));
 
         factura.setFont(new java.awt.Font("Rockwell Condensed", 1, 14)); // NOI18N
         factura.setModel(new javax.swing.table.DefaultTableModel(
@@ -205,18 +216,19 @@ public class Venda extends javax.swing.JFrame
         ));
         jScrollPane2.setViewportView(factura);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 130, 440, 294));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 220, 440, 370));
 
         jLabel1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 51, 51));
         jLabel1.setText("TOTAL:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 440, 70, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 590, 70, -1));
 
         jLabel2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 51, 51));
         jLabel2.setText("00.0 KZS");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 440, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 590, -1, -1));
 
+        Pagar.setBackground(new java.awt.Color(204, 255, 255));
         Pagar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         Pagar.setForeground(new java.awt.Color(0, 51, 51));
         Pagar.setText("Pagar");
@@ -227,7 +239,7 @@ public class Venda extends javax.swing.JFrame
                 PagarActionPerformed(evt);
             }
         });
-        jPanel1.add(Pagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 500, -1, -1));
+        jPanel1.add(Pagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 540, 120, 40));
 
         adicionarAFactura.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         adicionarAFactura.setForeground(new java.awt.Color(0, 51, 51));
@@ -239,11 +251,11 @@ public class Venda extends javax.swing.JFrame
                 adicionarAFacturaActionPerformed(evt);
             }
         });
-        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 490, -1, -1));
-        jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 130, 179, 37));
-        jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 179, 37));
-        jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 220, 179, 37));
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 220, 179, 37));
+        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 560, -1, 30));
+        jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 179, 37));
+        jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 179, 37));
+        jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 179, 37));
+        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 179, 37));
 
         jButton3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(0, 51, 51));
@@ -255,43 +267,43 @@ public class Venda extends javax.swing.JFrame
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 500, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 400, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
         jLabel3.setText("FACTURA CLIENTE");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 110, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 180, -1, -1));
 
         jLabel4.setBackground(new java.awt.Color(163, 174, 208));
         jLabel4.setFont(new java.awt.Font("Rockwell Condensed", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 51, 51));
         jLabel4.setText("VENDER PRODUCTOS");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, -1, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 40, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 51, 51));
         jLabel5.setText("Nome Producto:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, -1, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 190, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 51, 51));
         jLabel6.setText("Nome Vendedor:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 110, -1, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 190, -1, -1));
 
         jLabel7.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 51, 51));
         jLabel7.setText("Preço:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 51, 51));
         jLabel8.setText("Quantidade:");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 280, -1, -1));
 
         jButton2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 51, 51));
         jButton2.setText("FACTURA PRO-FORMA");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 500, 200, 30));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 560, 200, 30));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -308,59 +320,100 @@ public class Venda extends javax.swing.JFrame
             }
         });
 
-        PAGAMENTOS.setBackground(new java.awt.Color(255, 0, 153));
-        PAGAMENTOS.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        PAGAMENTOS.setForeground(new java.awt.Color(0, 51, 51));
-        PAGAMENTOS.setText("PAGAMENTOS");
-        PAGAMENTOS.setToolTipText("");
-        PAGAMENTOS.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                PAGAMENTOSMouseClicked(evt);
-            }
-        });
-
-        jLabel11.setText("jLabel11");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PAGAMENTOS, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel10)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(200, 200, 200)
-                .addComponent(PAGAMENTOS, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(78, 78, 78)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(jLabel10)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 160, 580));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 70, 70));
+
+        imprimir.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        imprimir.setText("Imprimir Factura");
+        imprimir.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                imprimirActionPerformed(evt);
+            }
+        });
+        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 540, 190, 40));
+
+        Troco.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
+        jPanel1.add(Troco, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 330, 180, 30));
+
+        Trocol.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        Trocol.setText("Valor Pago");
+        jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1380, 230, -1, -1));
+
+        telefone.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
+        jPanel1.add(telefone, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 330, 180, 30));
+
+        pagamentos.setFont(new java.awt.Font("Rockwell Condensed", 1, 12)); // NOI18N
+        pagamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cartão", "Dinheiro" }));
+        jPanel1.add(pagamentos, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 240, 180, 30));
+
+        jLabel11.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel11.setText("Forma de Pagamento");
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 220, -1, -1));
+
+        jLabel12.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel12.setText("Telefone Cliente");
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 310, -1, -1));
+
+        ValorPago.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
+        jPanel1.add(ValorPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 430, 180, 30));
+
+        jLabel13.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel13.setText("Valor Pago");
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 410, -1, -1));
+
+        ValorAPagar.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
+        ValorAPagar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                ValorAPagarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ValorAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 250, 190, 30));
+
+        jLabel14.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        jLabel14.setText("Valor a Pagar");
+        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1350, 310, -1, -1));
+
+        jLabel15.setFont(new java.awt.Font("Rockwell Condensed", 1, 24)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(0, 51, 51));
+        jLabel15.setText("DADOS CLIENTES");
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(1150, 140, -1, -1));
+
+        CadastrarCliente.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        CadastrarCliente.setText("Cadastrar Cliente");
+        CadastrarCliente.setToolTipText("");
+        jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 460, 160, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1180, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1508, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 577, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 643, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -442,18 +495,22 @@ public class Venda extends javax.swing.JFrame
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
-    private void PAGAMENTOSMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_PAGAMENTOSMouseClicked
-    {//GEN-HEADEREND:event_PAGAMENTOSMouseClicked
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_PAGAMENTOSMouseClicked
-
     private void PagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_PagarActionPerformed
     {//GEN-HEADEREND:event_PagarActionPerformed
         // TODO add your handling code here:
         new Pagamentos().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_PagarActionPerformed
+
+    private void imprimirActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_imprimirActionPerformed
+    {//GEN-HEADEREND:event_imprimirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_imprimirActionPerformed
+
+    private void ValorAPagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ValorAPagarActionPerformed
+    {//GEN-HEADEREND:event_ValorAPagarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ValorAPagarActionPerformed
 
 //   private void atualizarEstoque(int idProduto, int novaQuantidade) {
 //    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
@@ -525,15 +582,24 @@ public class Venda extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel PAGAMENTOS;
+    private javax.swing.JButton CadastrarCliente;
     private javax.swing.JButton Pagar;
+    private javax.swing.JTextField Troco;
+    private javax.swing.JLabel Trocol;
+    private javax.swing.JTextField ValorAPagar;
+    private javax.swing.JTextField ValorPago;
     private javax.swing.JButton adicionarAFactura;
     private javax.swing.JTable factura;
+    private javax.swing.JButton imprimir;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -548,8 +614,10 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField pPreco;
+    private javax.swing.JComboBox<String> pagamentos;
     private javax.swing.JTextField pnome;
     private javax.swing.JTable productos1;
+    private javax.swing.JTextField telefone;
     private javax.swing.JTextField vendedor;
     // End of variables declaration//GEN-END:variables
 }

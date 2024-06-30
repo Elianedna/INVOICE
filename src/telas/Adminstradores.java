@@ -367,6 +367,13 @@ public class Adminstradores extends javax.swing.JFrame
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
         jLabel3.setText("VENDEDORES");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel3MouseClicked(evt);
+            }
+        });
 
         jLabel11.setBackground(new java.awt.Color(255, 0, 153));
         jLabel11.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
@@ -539,7 +546,7 @@ public class Adminstradores extends javax.swing.JFrame
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel10MouseClicked
     {//GEN-HEADEREND:event_jLabel10MouseClicked
         // TODO add your handling code here:
-        new visualizarVendas().setVisible(true);
+        new Relatorio().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
@@ -549,6 +556,14 @@ public class Adminstradores extends javax.swing.JFrame
         new Productos().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel11MouseClicked
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel3MouseClicked
+    {//GEN-HEADEREND:event_jLabel3MouseClicked
+        // TODO add your handling code here:
+        
+        new Funcionarios().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments

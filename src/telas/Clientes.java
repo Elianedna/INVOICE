@@ -33,7 +33,6 @@ public class Clientes extends javax.swing.JFrame
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         nomeTxt = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
         emailTxt = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -42,10 +41,7 @@ public class Clientes extends javax.swing.JFrame
         apagar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         vendedores = new javax.swing.JTable();
-        senha1 = new javax.swing.JPasswordField();
-        senha2 = new javax.swing.JPasswordField();
         jLabel6 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -65,21 +61,16 @@ public class Clientes extends javax.swing.JFrame
 
         nomeTxt.setFont(new java.awt.Font("Yu Gothic UI Light", 1, 14)); // NOI18N
         nomeTxt.setForeground(new java.awt.Color(255, 0, 153));
-        jPanel2.add(nomeTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 178, 31));
-
-        jLabel5.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel5.setText("Confirmar Senha");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 350, 178, 20));
+        jPanel2.add(nomeTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 178, 31));
 
         emailTxt.setFont(new java.awt.Font("Yu Gothic UI Light", 1, 14)); // NOI18N
         emailTxt.setForeground(new java.awt.Color(255, 0, 153));
-        jPanel2.add(emailTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 178, 31));
+        jPanel2.add(emailTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 178, 31));
 
         jLabel7.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel7.setText("E-mail");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, 178, 40));
+        jLabel7.setText("Telefone");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 178, 40));
 
         jLabel9.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 51, 51));
@@ -134,7 +125,7 @@ public class Clientes extends javax.swing.JFrame
             },
             new String []
             {
-                "ID", "Nome", "E-mail", "Data_Admissão"
+                "ID", "Nome", "Telefone", "Data_Admissão"
             }
         ));
         vendedores.setRowHeight(29);
@@ -142,21 +133,10 @@ public class Clientes extends javax.swing.JFrame
 
         jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 130, 510, 450));
 
-        senha1.setText("jPasswordField1");
-        jPanel2.add(senha1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 180, 30));
-
-        senha2.setText("jPasswordField2");
-        jPanel2.add(senha2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 370, 180, 30));
-
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 51, 51));
         jLabel6.setText("Nome do Vendedor");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, 178, -1));
-
-        jLabel8.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel8.setText("Senha");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 178, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 178, 20));
 
         jLabel1.setBackground(new java.awt.Color(255, 0, 153));
         jLabel1.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
@@ -353,7 +333,7 @@ public class Clientes extends javax.swing.JFrame
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel10MouseClicked
     {//GEN-HEADEREND:event_jLabel10MouseClicked
         // TODO add your handling code here:
-        new visualizarVendas().setVisible(true);
+        new Relatorio().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
@@ -423,17 +403,13 @@ public class Clientes extends javax.swing.JFrame
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField nomeTxt;
-    private javax.swing.JPasswordField senha1;
-    private javax.swing.JPasswordField senha2;
     private javax.swing.JTable vendedores;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,13 +18,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author watel
  */
-public class visualizarVendas extends javax.swing.JFrame
+public class Relatorio extends javax.swing.JFrame
 {
 
     /**
      * Creates new form visualizarVendas
      */
-    public visualizarVendas()
+    public Relatorio()
     {
         initComponents();
         carregarDadosFactura();
@@ -41,12 +41,13 @@ public class visualizarVendas extends javax.swing.JFrame
             try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
                 DefaultTableModel model = new DefaultTableModel(new Object[]{
-                    "ID", "Nome Vendedor", "Data Emissão", "Total"
+                    "ID", "Nome Vendedor","Nome Cliente", "Data Emissão", "Total"
                 }, 0);
 
                 while (rs.next()) {
                     int idFactura = rs.getInt("id_factura");
                     String nomeVendedor = rs.getString("nome_vendedor");
+                    String nomeCliente = rs.getString("nome_cliente");
                     Date dataEmissao = rs.getDate("data_emissao");
                     double total = rs.getDouble("total");
                     model.addRow(new Object[]{
@@ -137,6 +138,7 @@ public class visualizarVendas extends javax.swing.JFrame
         jScrollPane2 = new javax.swing.JScrollPane();
         productos1 = new javax.swing.JTable();
         relatorio = new javax.swing.JButton();
+        nomeCliente = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -158,14 +160,14 @@ public class visualizarVendas extends javax.swing.JFrame
         productos1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][]
             {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String []
             {
-                "ID", "Vendedor", "Data_Emissao", "Total"
+                "ID", "Vendedor", "Cliente", "Data_Emissao", "Total_Pago"
             }
         ));
         productos1.setRowHeight(29);
@@ -179,6 +181,16 @@ public class visualizarVendas extends javax.swing.JFrame
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
                 relatorioMouseClicked(evt);
+            }
+        });
+
+        nomeCliente.setFont(new java.awt.Font("Rockwell Condensed", 0, 14)); // NOI18N
+        nomeCliente.setText("Nome Cliente");
+        nomeCliente.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                nomeClienteActionPerformed(evt);
             }
         });
 
@@ -196,7 +208,9 @@ public class visualizarVendas extends javax.swing.JFrame
                         .addGap(352, 352, 352)
                         .addComponent(jLabel4))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(349, 349, 349)
+                        .addGap(212, 212, 212)
+                        .addComponent(nomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
                         .addComponent(relatorio)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -205,10 +219,12 @@ public class visualizarVendas extends javax.swing.JFrame
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(relatorio)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(relatorio)
+                    .addComponent(nomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(41, 41, 41))
         );
 
@@ -240,9 +256,23 @@ public class visualizarVendas extends javax.swing.JFrame
 
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setText("VENDEDORES");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel3MouseClicked(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setText("ADMINISTRADORES");
+        jLabel6.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel6MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -315,6 +345,25 @@ public class visualizarVendas extends javax.swing.JFrame
         this.dispose();
     }//GEN-LAST:event_jLabel2MouseClicked
 
+    private void nomeClienteActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_nomeClienteActionPerformed
+    {//GEN-HEADEREND:event_nomeClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nomeClienteActionPerformed
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel3MouseClicked
+    {//GEN-HEADEREND:event_jLabel3MouseClicked
+        // TODO add your handling code here:
+        new Funcionarios().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel6MouseClicked
+    {//GEN-HEADEREND:event_jLabel6MouseClicked
+        // TODO add your handling code here:
+        new Adminstradores().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jLabel6MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -338,20 +387,21 @@ public class visualizarVendas extends javax.swing.JFrame
         }
         catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(visualizarVendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Relatorio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(visualizarVendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Relatorio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(visualizarVendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Relatorio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(visualizarVendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Relatorio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
@@ -359,7 +409,7 @@ public class visualizarVendas extends javax.swing.JFrame
         {
             public void run()
             {
-                new visualizarVendas().setVisible(true);
+                new Relatorio().setVisible(true);
             }
         });
     }
@@ -374,6 +424,7 @@ public class visualizarVendas extends javax.swing.JFrame
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField nomeCliente;
     private javax.swing.JTable productos1;
     private javax.swing.JButton relatorio;
     // End of variables declaration//GEN-END:variables
