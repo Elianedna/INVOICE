@@ -27,15 +27,15 @@ public class Venda extends javax.swing.JFrame
      */
     public Venda()
     {
-        initComponents();
+       initComponents();
         factura.setModel(new javax.swing.table.DefaultTableModel(
-            new Object[][]{},
-            new String[]{"ID", "Nome", "Preço", "Quantidade", "Total"}
+                new Object[][]{},
+                new String[]{"ID", "Nome", "Preço", "Quantidade", "Total"}
         ));
 
         productos1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object[][]{},
-            new String[]{"ID", "Nome", "Categoria", "Preço", "Quantidade em Estoque"}
+                new Object[][]{},
+                new String[]{"ID", "Nome", "Categoria", "Preço", "Quantidade em Estoque"}
         ));
 
         pnome.setEditable(false);
@@ -43,6 +43,8 @@ public class Venda extends javax.swing.JFrame
         vendedor.setEditable(false);
 
         exibirDadosTabela();
+
+        vendedor.setText(UserLogado.getNome());
 
         productos1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -60,8 +62,8 @@ public class Venda extends javax.swing.JFrame
     
     
 
-    private void inserirFaturaNoBanco() {
-         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+   private void inserirFaturaNoBanco() {
+        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
 
@@ -85,9 +87,9 @@ public class Venda extends javax.swing.JFrame
                 stmt.setDouble(3, totalGlobal);
                 stmt.executeUpdate();
 
-                ResultSet generatedKeys = stmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    long facturaId = generatedKeys.getLong(1);
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    long facturaId = rs.getLong(1);
                     inserirItensFatura(con, facturaId);
                 }
 
@@ -103,8 +105,9 @@ public class Venda extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados.");
         }
     }
+
     
-    private void inserirItensFatura(Connection con, long facturaId) throws SQLException {
+     private void inserirItensFatura(Connection con, long facturaId) throws SQLException {
         DefaultTableModel modelFatura = (DefaultTableModel) factura.getModel();
 
         String sql = "INSERT INTO itens_fatura (factura_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)";
@@ -126,7 +129,7 @@ public class Venda extends javax.swing.JFrame
         }
     }
 
-     private void atualizarEstoque(Connection con, int produtoId, int quantidadeVendida) throws SQLException {
+    private void atualizarEstoque(Connection con, int produtoId, int quantidadeVendida) throws SQLException {
         String sql = "UPDATE produtos SET quantidade = quantidade - ? WHERE id_produto = ?";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, quantidadeVendida);
@@ -135,7 +138,7 @@ public class Venda extends javax.swing.JFrame
         }
     }
     
-     private void exibirDadosTabela() {
+    private void exibirDadosTabela() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
@@ -191,7 +194,7 @@ public class Venda extends javax.swing.JFrame
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        facturaProForma = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         imprimir = new javax.swing.JButton();
@@ -337,10 +340,17 @@ public class Venda extends javax.swing.JFrame
         jLabel8.setText("Quantidade:");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 280, -1, -1));
 
-        jButton2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 51, 51));
-        jButton2.setText("FACTURA PRO-FORMA");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 560, 200, 30));
+        facturaProForma.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        facturaProForma.setForeground(new java.awt.Color(0, 51, 51));
+        facturaProForma.setText("FACTURA PRO-FORMA");
+        facturaProForma.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                facturaProFormaMouseClicked(evt);
+            }
+        });
+        jPanel1.add(facturaProForma, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 560, 200, 30));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -529,9 +539,10 @@ public class Venda extends javax.swing.JFrame
     // Atualiza o estoque no banco de dados e na tabela
    // atualizarEstoque(idProduto, quantidadeEmEstoque - quantidade);
 
-
     }//GEN-LAST:event_adicionarAFacturaActionPerformed
 
+    
+    
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel10MouseClicked
     {//GEN-HEADEREND:event_jLabel10MouseClicked
         // TODO add your handling code here:
@@ -561,6 +572,12 @@ public class Venda extends javax.swing.JFrame
         new Clientes().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_CadastrarClienteMouseClicked
+
+    private void facturaProFormaMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_facturaProFormaMouseClicked
+    {//GEN-HEADEREND:event_facturaProFormaMouseClicked
+        // TODO add your handling code here:FacturaPro
+        
+    }//GEN-LAST:event_facturaProFormaMouseClicked
 
 //   private void atualizarEstoque(int idProduto, int novaQuantidade) {
 //    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
@@ -640,8 +657,8 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JTextField ValorPago;
     private javax.swing.JButton adicionarAFactura;
     private javax.swing.JTable factura;
+    private javax.swing.JButton facturaProForma;
     private javax.swing.JButton imprimir;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

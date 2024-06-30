@@ -281,6 +281,7 @@ public class LoginFuncionario extends javax.swing.JFrame
     private void entrarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_entrarMouseClicked
     {//GEN-HEADEREND:event_entrarMouseClicked
         // TODO add your handling code here:
+        String nomeVendedor = nomeUser1.getText();
          if (this.nomeUser1.getText().isEmpty() || new String(password1.getPassword()).isEmpty()) {
             JOptionPane.showMessageDialog(null, "Falta Informacoes");
         } else {
@@ -304,6 +305,7 @@ public class LoginFuncionario extends javax.swing.JFrame
 
                 rs = stmt.executeQuery();
                 if (rs.next()) {
+                    UserLogado.setNome(nomeVendedor);
                     new Venda().setVisible(true);
                     this.dispose();
                 } else {
