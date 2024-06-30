@@ -304,7 +304,7 @@ public class LoginFuncionario extends javax.swing.JFrame
 
                 rs = stmt.executeQuery();
                 if (rs.next()) {
-                    new Productos().setVisible(true);
+                    new Venda().setVisible(true);
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Palavra-Passe ou Utilizador Invalido!!");

@@ -61,7 +61,7 @@ public class Venda extends javax.swing.JFrame
     
 
     private void inserirFaturaNoBanco() {
-        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
 
@@ -76,7 +76,7 @@ public class Venda extends javax.swing.JFrame
             con.setAutoCommit(false);
 
             String sql = "INSERT INTO factura (nome_vendedor, data_emissao, total) VALUES (?, ?, ?)";
-            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            try (PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 String nomeVendedor = vendedor.getText();
                 LocalDate dataEmissao = LocalDate.now();
 
@@ -84,6 +84,12 @@ public class Venda extends javax.swing.JFrame
                 stmt.setDate(2, Date.valueOf(dataEmissao));
                 stmt.setDouble(3, totalGlobal);
                 stmt.executeUpdate();
+
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long facturaId = generatedKeys.getLong(1);
+                    inserirItensFatura(con, facturaId);
+                }
 
                 con.commit();
                 JOptionPane.showMessageDialog(null, "Fatura inserida com sucesso.");
@@ -97,8 +103,39 @@ public class Venda extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados.");
         }
     }
+    
+    private void inserirItensFatura(Connection con, long facturaId) throws SQLException {
+        DefaultTableModel modelFatura = (DefaultTableModel) factura.getModel();
 
-    private void exibirDadosTabela() {
+        String sql = "INSERT INTO itens_fatura (factura_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            for (int i = 0; i < modelFatura.getRowCount(); i++) {
+                int produtoId = (int) modelFatura.getValueAt(i, 0);
+                int quantidade = (int) modelFatura.getValueAt(i, 3);
+                double preco = (double) modelFatura.getValueAt(i, 2);
+
+                stmt.setLong(1, facturaId);
+                stmt.setInt(2, produtoId);
+                stmt.setInt(3, quantidade);
+                stmt.setDouble(4, preco);
+                stmt.addBatch();
+
+                atualizarEstoque(con, produtoId, quantidade);
+            }
+            stmt.executeBatch();
+        }
+    }
+
+     private void atualizarEstoque(Connection con, int produtoId, int quantidadeVendida) throws SQLException {
+        String sql = "UPDATE produtos SET quantidade = quantidade - ? WHERE id_produto = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, quantidadeVendida);
+            stmt.setInt(2, produtoId);
+            stmt.executeUpdate();
+        }
+    }
+    
+     private void exibirDadosTabela() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
@@ -401,6 +438,13 @@ public class Venda extends javax.swing.JFrame
         CadastrarCliente.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         CadastrarCliente.setText("Cadastrar Cliente");
         CadastrarCliente.setToolTipText("");
+        CadastrarCliente.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                CadastrarClienteMouseClicked(evt);
+            }
+        });
         jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 460, 160, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -498,8 +542,7 @@ public class Venda extends javax.swing.JFrame
     private void PagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_PagarActionPerformed
     {//GEN-HEADEREND:event_PagarActionPerformed
         // TODO add your handling code here:
-        new Pagamentos().setVisible(true);
-        this.dispose();
+       
     }//GEN-LAST:event_PagarActionPerformed
 
     private void imprimirActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_imprimirActionPerformed
@@ -511,6 +554,13 @@ public class Venda extends javax.swing.JFrame
     {//GEN-HEADEREND:event_ValorAPagarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ValorAPagarActionPerformed
+
+    private void CadastrarClienteMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_CadastrarClienteMouseClicked
+    {//GEN-HEADEREND:event_CadastrarClienteMouseClicked
+        // TODO add your handling code here:
+        new Clientes().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_CadastrarClienteMouseClicked
 
 //   private void atualizarEstoque(int idProduto, int novaQuantidade) {
 //    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";

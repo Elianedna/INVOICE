@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package telas;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 public class Relatorio extends javax.swing.JFrame
 {
 
+    
     /**
      * Creates new form visualizarVendas
      */
@@ -30,28 +32,38 @@ public class Relatorio extends javax.swing.JFrame
         carregarDadosFactura();
     }
 
-    private void carregarDadosFactura() {
+   private void carregarDadosFactura() {
         String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
 
-        String sql = "SELECT * FROM factura";
+        String nomeClienteFiltro = nomeCliente.getText().trim(); // Obtém o nome do cliente do campo
+
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT * FROM factura");
+
+        // Se o campo nomeCliente não estiver vazio, adiciona filtro na consulta SQL
+        if (!nomeClienteFiltro.isEmpty()) {
+            sqlBuilder.append(" WHERE cliente LIKE '%").append(nomeClienteFiltro).append("%'");
+        }
+
+        String sql = sqlBuilder.toString();
 
         try (Connection con = DriverManager.getConnection(connectionURL, dbUser, dbPassword)) {
             try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
                 DefaultTableModel model = new DefaultTableModel(new Object[]{
-                    "ID", "Nome Vendedor","Nome Cliente", "Data Emissão", "Total"
+                    "ID", "Nome Vendedor", "Nome Cliente", "Data Emissão", "Total"
                 }, 0);
 
                 while (rs.next()) {
                     int idFactura = rs.getInt("id_factura");
                     String nomeVendedor = rs.getString("nome_vendedor");
-                    String nomeCliente = rs.getString("nome_cliente");
+                    String nomeCliente = rs.getString("cliente");
                     Date dataEmissao = rs.getDate("data_emissao");
                     double total = rs.getDouble("total");
                     model.addRow(new Object[]{
-                        idFactura, nomeVendedor, dataEmissao, total
+                        idFactura, nomeVendedor, nomeCliente, dataEmissao, total
                     });
                 }
 
@@ -63,6 +75,7 @@ public class Relatorio extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados.");
         }
     }
+
     
     
     
@@ -70,6 +83,8 @@ public class Relatorio extends javax.swing.JFrame
    
    private void imprimirRelatorioVendas() {
         DefaultTableModel modelVendas = (DefaultTableModel) productos1.getModel();
+        
+        String nomeAdministrador = AdmLogado.getNomeAdministrador(); // Obtém o nome do administrador logado
 
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
@@ -82,31 +97,73 @@ public class Relatorio extends javax.swing.JFrame
 
                     Graphics2D g2d = (Graphics2D) graphics;
                     g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-                    g2d.setFont(new Font("Arial", Font.BOLD, 12));
+                    g2d.setFont(new Font("Rockwell Condensed", Font.PLAIN, 14));
 
                     int y = 20;
 
                     // Cabeçalho
-                    g2d.drawString("Relatório de Vendas", 10, y);
-                    y += 15;
+                    g2d.setColor(Color.GRAY);
+                    g2d.drawString("RELATÓRIO DE VENDAS", 10, y);
+                    y += 20;
+                    g2d.setColor(Color.BLACK);
                     g2d.drawString("Data: " + java.time.LocalDate.now(), 10, y);
-                    y += 15;
-                    g2d.drawString("Nome Vendedor: ELIANE WATELE", 10, y);
+                    y += 20;
+                    g2d.drawString("Nome Administrador: " + nomeAdministrador, 10, y);
+                    y += 20;
+                    g2d.drawString("Nome da Empresa: LOJA DA QUÉTURA", 10, y);
+                    y += 20;
+                    g2d.drawString("Localização: CENTRALIDADE ZANGO 8000, V 144", 10, y);
+                    y += 20;
+                    g2d.drawString("LUANDA, ANGOLA", 10, y);
+                    y += 20;
+                    g2d.drawString("NIF:12345678900", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString("=======================================================================================================", 10, y);
                     y += 30;
 
-                    // Tabela de vendas
+                    // Cabeçalho da Tabela
+                    g2d.setColor(Color.GRAY);
                     g2d.drawString("ID", 10, y);
                     g2d.drawString("Nome Vendedor", 60, y);
-                    g2d.drawString("Data Emissão", 200, y);
-                    g2d.drawString("Total", 300, y);
-                    y += 15;
+                    g2d.drawString("Nome Cliente", 200, y);
+                    g2d.drawString("Data Emissão", 340, y);
+                    g2d.drawString("Total", 460, y);
+                    g2d.drawLine(10, y + 2, 500, y + 2);
+                    y += 20;
 
+                    // Linhas da Tabela
+                    g2d.setColor(Color.BLACK);
                     for (int i = 0; i < modelVendas.getRowCount(); i++) {
-                        g2d.drawString(modelVendas.getValueAt(i, 0).toString(), 10, y); // ID
-                        g2d.drawString(modelVendas.getValueAt(i, 1).toString(), 60, y); // Nome Vendedor
-                        g2d.drawString(modelVendas.getValueAt(i, 2).toString(), 200, y); // Data Emissão
-                        g2d.drawString(modelVendas.getValueAt(i, 3).toString(), 300, y); // Total
-                        y += 15;
+                        if (i % 2 == 0) {
+                            g2d.setColor(new Color(230, 230, 250)); // Cor de fundo para linhas pares
+                            g2d.fillRect(10, y - 12, 500, 20);
+                        }
+
+                        g2d.setColor(Color.BLACK);
+                        for (int col = 0; col < modelVendas.getColumnCount(); col++) {
+                            Object cellValue = modelVendas.getValueAt(i, col);
+                            String value = (cellValue != null) ? cellValue.toString() : "";
+                            switch (col) {
+                                case 0:
+                                    g2d.drawString(value, 10, y); // ID
+                                    break;
+                                case 1:
+                                    g2d.drawString(value, 60, y); // Nome Vendedor
+                                    break;
+                                case 2:
+                                    g2d.drawString(value, 200, y); // Nome Cliente
+                                    break;
+                                case 3:
+                                    g2d.drawString(value, 340, y); // Data Emissão
+                                    break;
+                                case 4:
+                                    g2d.drawString(value, 460, y); // Total
+                                    break;
+                            }
+                        }
+                        y += 20;
                     }
 
                     return PAGE_EXISTS;
@@ -121,6 +178,8 @@ public class Relatorio extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao imprimir o relatório de vendas: " + ex.getMessage(), "Erro de Impressão", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -348,6 +407,7 @@ public class Relatorio extends javax.swing.JFrame
     private void nomeClienteActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_nomeClienteActionPerformed
     {//GEN-HEADEREND:event_nomeClienteActionPerformed
         // TODO add your handling code here:
+        carregarDadosFactura();
     }//GEN-LAST:event_nomeClienteActionPerformed
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel3MouseClicked

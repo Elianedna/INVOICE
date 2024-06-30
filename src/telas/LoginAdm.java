@@ -153,6 +153,8 @@ public class LoginAdm extends javax.swing.JFrame
     private void entrarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_entrarMouseClicked
     {//GEN-HEADEREND:event_entrarMouseClicked
         // TODO add your handling code here:
+        String nomeAdministrador = nomeUser.getText();
+        
         if (this.nomeUser.getText().isEmpty() || new String(password.getPassword()).isEmpty()) {
             JOptionPane.showMessageDialog(null, "Falta Informacoes");
         } else {
@@ -176,6 +178,7 @@ public class LoginAdm extends javax.swing.JFrame
 
                 rs = stmt.executeQuery();
                 if (rs.next()) {
+                    AdmLogado.setNomeAdministrador(nomeAdministrador); 
                     new Productos().setVisible(true);
                     this.dispose();
                 } else {
