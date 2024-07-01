@@ -4,12 +4,23 @@
  */
 package telas;
 
+import java.sql.*;
+import java.time.LocalDate;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author watel
  */
 public class Clientes extends javax.swing.JFrame
 {
+      public Connection con;
+    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+    String dbUser = "root";
+    String dbPassword = "123456";
 
     /**
      * Creates new form Clientes
@@ -19,6 +30,141 @@ public class Clientes extends javax.swing.JFrame
         initComponents();
     }
 
+    
+    // Método para atualizar produto no banco de dados
+    public void atualizarCliente(int id, String nome, String telefone)
+    {
+        String sql = "UPDATE vendedores SET nome = ?, email = ? WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, nome);
+            pstmt.setString(2, telefone);
+         pstmt.setInt(3, id);
+            pstmt.executeUpdate();
+            System.out.println("Vendedor atualizado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Vendedor Atualizado com Sucesso!!!");
+
+            // Atualizar a tabela após a atualização do produto
+            mostrarCliente();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarClienteSelecionado()
+    {
+        int selectedRow = vendedores.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            int id = (int) vendedores.getValueAt(selectedRow, 0);
+            String nome = (String) vendedores.getValueAt(selectedRow, 1);
+            String telefone = (String) vendedores.getValueAt(selectedRow, 2);
+
+            nomeTxt.setText(nome);
+            emailTxt.setText(telefone);
+
+        }
+    }
+    public void inserirCliente(String nome,String telefone)
+    {
+        String sql = "INSERT INTO clientes (nome, telefone,data_emissao ) VALUES (?, ?,?)";
+        LocalDate dataAdmissao = LocalDate.now();
+        if (verificarTelefoneExistente("clientes", telefone))
+        {
+            JOptionPane.showMessageDialog(this, "Telefone já está em uso por um funcionário.",
+                "Erro de Inserção", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, nome);
+            pstmt.setString(2, telefone);
+            pstmt.setDate(3, java.sql.Date.valueOf(dataAdmissao));
+            pstmt.executeUpdate();
+            System.out.println("Cliente inserido com sucesso!");
+            JOptionPane.showMessageDialog(this, "Cliente Adicionado com Sucesso!!!");
+
+            // Atualizar a tabela após a inserção do produto
+            mostrarCliente();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public boolean verificarTelefoneExistente(String tabela, String telefone)
+    {
+        String sql = "SELECT COUNT(*) FROM " + tabela + " WHERE email = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql))
+        {
+            pstmt.setString(1, telefone);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next())
+            {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Método para atualizar a tabela com todos os adms
+    public void mostrarCliente()
+    {
+        String sql = "SELECT id, nome, email, data_de_criacao FROM vendedores";
+        try (java.sql.Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql))
+        {
+
+            DefaultTableModel model = (DefaultTableModel) vendedores.getModel();
+            model.setRowCount(0); // Limpar a tabela antes de adicionar os resultados
+
+            while (rs.next())
+            {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                String email = rs.getString("email");
+                java.util.Date dataDeCriacao = rs.getDate("data_de_criacao");
+                model.addRow(new Object[]
+                {
+                    id, nome, email, dataDeCriacao
+                });
+            }
+
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void adicionarListenerTabela()
+    {
+        vendedores.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent event)
+            {
+                if (!event.getValueIsAdjusting() && vendedores.getSelectedRow() != -1)
+                {
+                    int selectedRow = vendedores.getSelectedRow();
+                    Object dataDeCriacao = vendedores.getValueAt(selectedRow, 3); // Assumindo que a data está na quarta coluna
+                    if (dataDeCriacao != null)
+                    {
+                        java.util.Date data = (java.util.Date) dataDeCriacao;
+                        System.out.println("Data de admissão: " + data);
+                        // Você pode adicionar mais lógica aqui se necessário
+                    }
+                }
+            }
+        });
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,7 +220,7 @@ public class Clientes extends javax.swing.JFrame
 
         jLabel9.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel9.setText(" Lista de Vendedores");
+        jLabel9.setText(" Lista de Clientes");
         jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 100, -1, -1));
 
         guardar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
@@ -135,7 +281,7 @@ public class Clientes extends javax.swing.JFrame
 
         jLabel6.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel6.setText("Nome do Vendedor");
+        jLabel6.setText("Nome do Cliente");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 178, 20));
 
         jLabel1.setBackground(new java.awt.Color(255, 0, 153));
@@ -232,26 +378,20 @@ public class Clientes extends javax.swing.JFrame
     {//GEN-HEADEREND:event_guardarActionPerformed
         // TODO add your handling code here:
         String nome = nomeTxt.getText();
-        String email = emailTxt.getText();
-        String senha = new String(senha1.getPassword());
-        String confirmarSenha = new String(senha2.getPassword());
+        String telefone = emailTxt.getText();
+        
+        
 
         // Verificar se os campos não estão vazios
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty())
+        if (nome.isEmpty() || telefone.isEmpty())
         {
             JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!");
             return;
         }
 
-        // Verificar se as senhas coincidem
-        if (!senha.equals(confirmarSenha))
-        {
-            JOptionPane.showMessageDialog(this, "As senhas não coincidem. Por favor, verifique e tente novamente.");
-            return;
-        }
-
+      
         // Inserir o administrador
-        inserirVendedor(nome, email, senha);
+        inserirCliente(nome, telefone);
     }//GEN-LAST:event_guardarActionPerformed
 
     private void editarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editarActionPerformed
@@ -262,26 +402,8 @@ public class Clientes extends javax.swing.JFrame
         {
             int id = (int) vendedores.getValueAt(selectedRow, 0);
             String nome = nomeTxt.getText();
-            String email = emailTxt.getText();
-            String senha = senha1.getText();
-            String confirmarSenha = senha2.getText();
-
-            // Verificar se as senhas coincidem
-            if (!senha.equals(confirmarSenha))
-            {
-                JOptionPane.showMessageDialog(this, "As senhas não coincidem. Por favor, verifique e tente novamente.");
-                return;
-            }
-
-            if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty())
-            {
-                JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!");
-            }
-            else
-            {
-                atualizarVendedor(id, nome, email, senha);
-
-            }
+            String telefone = emailTxt.getText();
+             atualizarCliente(id, nome, telefone);
         }
         else
         {
@@ -309,7 +431,7 @@ public class Clientes extends javax.swing.JFrame
                     System.out.println("Vendedor apagado com sucesso!");
                     JOptionPane.showMessageDialog(this, "Vendedor Apagado com Sucesso!!!");
 
-                    mostrarVendedor();
+                    mostrarCliente();
                 }
                 catch (SQLException e)
                 {
@@ -333,7 +455,7 @@ public class Clientes extends javax.swing.JFrame
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel10MouseClicked
     {//GEN-HEADEREND:event_jLabel10MouseClicked
         // TODO add your handling code here:
-        new Relatorio().setVisible(true);
+        new Venda().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 

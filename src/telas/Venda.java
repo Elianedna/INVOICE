@@ -504,7 +504,6 @@ public class Venda extends javax.swing.JFrame
         factura = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        Pagar = new javax.swing.JButton();
         adicionarAFactura = new javax.swing.JButton();
         vendedor = new javax.swing.JTextField();
         pnome = new javax.swing.JTextField();
@@ -592,19 +591,6 @@ public class Venda extends javax.swing.JFrame
         jLabel2.setText("00.0 KZS");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 590, -1, -1));
 
-        Pagar.setBackground(new java.awt.Color(204, 255, 255));
-        Pagar.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        Pagar.setForeground(new java.awt.Color(0, 51, 51));
-        Pagar.setText("Pagar");
-        Pagar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                PagarActionPerformed(evt);
-            }
-        });
-        jPanel1.add(Pagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 550, 120, 40));
-
         adicionarAFactura.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         adicionarAFactura.setForeground(new java.awt.Color(0, 51, 51));
         adicionarAFactura.setText("Adicionar à Factura");
@@ -631,7 +617,7 @@ public class Venda extends javax.swing.JFrame
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 400, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 360, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
@@ -726,17 +712,17 @@ public class Venda extends javax.swing.JFrame
                 imprimirActionPerformed(evt);
             }
         });
-        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 540, 190, 40));
+        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 510, 190, 40));
 
         Troco.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
-        jPanel1.add(Troco, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 430, 180, 30));
+        jPanel1.add(Troco, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 350, 180, 30));
 
         Trocol.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         Trocol.setText("Valor Pago");
-        jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 320, -1, -1));
+        jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 250, -1, -1));
 
         telefone.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
-        jPanel1.add(telefone, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 330, 180, 30));
+        jPanel1.add(telefone, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 280, 180, 30));
 
         pagamentos.setFont(new java.awt.Font("Rockwell Condensed", 1, 12)); // NOI18N
         pagamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dinheiro", "Cartão" }));
@@ -747,22 +733,22 @@ public class Venda extends javax.swing.JFrame
                 pagamentosActionPerformed(evt);
             }
         });
-        jPanel1.add(pagamentos, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 240, 180, 30));
+        jPanel1.add(pagamentos, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 190, 180, 30));
 
         jLabel11.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel11.setText("Forma de Pagamento");
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 220, -1, -1));
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 170, -1, -1));
 
         jLabel12.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel12.setText("Telefone Cliente");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 310, -1, -1));
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 260, -1, -1));
 
         ValorPago.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
-        jPanel1.add(ValorPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 340, 180, 30));
+        jPanel1.add(ValorPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 270, 180, 30));
 
         jLabel13.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel13.setText("Troco");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1410, 410, -1, -1));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1410, 330, -1, -1));
 
         ValorAPagar.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
         ValorAPagar.addActionListener(new java.awt.event.ActionListener()
@@ -772,16 +758,16 @@ public class Venda extends javax.swing.JFrame
                 ValorAPagarActionPerformed(evt);
             }
         });
-        jPanel1.add(ValorAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 250, 190, 30));
+        jPanel1.add(ValorAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 200, 180, 30));
 
         jLabel14.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel14.setText("Valor a Pagar");
-        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1360, 230, -1, -1));
+        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1360, 180, -1, -1));
 
         jLabel15.setFont(new java.awt.Font("Rockwell Condensed", 1, 24)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 51, 51));
         jLabel15.setText("DADOS CLIENTES");
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(1150, 140, -1, -1));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(1150, 90, -1, -1));
 
         CadastrarCliente.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         CadastrarCliente.setText("Cadastrar Cliente");
@@ -793,8 +779,8 @@ public class Venda extends javax.swing.JFrame
                 CadastrarClienteMouseClicked(evt);
             }
         });
-        jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 490, 160, 30));
-        jPanel1.add(codAdm, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 430, 180, 30));
+        jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 420, 180, 30));
+        jPanel1.add(codAdm, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 400, 180, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -902,12 +888,6 @@ public class Venda extends javax.swing.JFrame
         this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
-    private void PagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_PagarActionPerformed
-    {//GEN-HEADEREND:event_PagarActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_PagarActionPerformed
-
     private void imprimirActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_imprimirActionPerformed
     {//GEN-HEADEREND:event_imprimirActionPerformed
         // TODO add your handling code here:
@@ -944,6 +924,11 @@ public class Venda extends javax.swing.JFrame
         if (modelVendas.getRowCount() == 0)
         {
             JOptionPane.showMessageDialog(null, "Não há dados para imprimir.", "Tabela Vazia", JOptionPane.WARNING_MESSAGE);
+            return; // Sai do método sem imprimir
+        }
+        if (this.Troco.getText().isEmpty() || this.ValorPago.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos", "Campos Vazios", JOptionPane.WARNING_MESSAGE);
             return; // Sai do método sem imprimir
         }
         imprimirFactura();
@@ -1024,7 +1009,6 @@ public class Venda extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CadastrarCliente;
-    private javax.swing.JButton Pagar;
     private javax.swing.JTextField Troco;
     private javax.swing.JLabel Trocol;
     private javax.swing.JTextField ValorAPagar;
