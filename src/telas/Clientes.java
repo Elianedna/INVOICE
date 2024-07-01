@@ -28,21 +28,44 @@ public class Clientes extends javax.swing.JFrame
     public Clientes()
     {
         initComponents();
+        try
+        {
+            con = DriverManager.getConnection(connectionURL, dbUser, dbPassword);
+            System.out.println("Conexão bem-sucedida!");
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        mostrarCliente();
+        adicionarListenerTabela();
+
+        vendedores.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent event)
+            {
+                if (!event.getValueIsAdjusting() && vendedores.getSelectedRow() != -1)
+                {
+                    carregarClienteSelecionado();
+                }
+            }
+        });
     }
 
     
     // Método para atualizar produto no banco de dados
     public void atualizarCliente(int id, String nome, String telefone)
     {
-        String sql = "UPDATE vendedores SET nome = ?, email = ? WHERE id = ?";
+        String sql = "UPDATE clientes SET nome = ?, telefone = ? WHERE id = ?";
         try (PreparedStatement pstmt = con.prepareStatement(sql))
         {
             pstmt.setString(1, nome);
             pstmt.setString(2, telefone);
          pstmt.setInt(3, id);
             pstmt.executeUpdate();
-            System.out.println("Vendedor atualizado com sucesso!");
-            JOptionPane.showMessageDialog(this, "Vendedor Atualizado com Sucesso!!!");
+            System.out.println("Cliente atualizado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Cliente Atualizado com Sucesso!!!");
 
             // Atualizar a tabela após a atualização do produto
             mostrarCliente();
@@ -73,7 +96,7 @@ public class Clientes extends javax.swing.JFrame
         LocalDate dataAdmissao = LocalDate.now();
         if (verificarTelefoneExistente("clientes", telefone))
         {
-            JOptionPane.showMessageDialog(this, "Telefone já está em uso por um funcionário.",
+            JOptionPane.showMessageDialog(this, "Telefone já está em uso por um Cliente.",
                 "Erro de Inserção", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -96,7 +119,7 @@ public class Clientes extends javax.swing.JFrame
     }
     public boolean verificarTelefoneExistente(String tabela, String telefone)
     {
-        String sql = "SELECT COUNT(*) FROM " + tabela + " WHERE email = ?";
+        String sql = "SELECT COUNT(*) FROM " + tabela + " WHERE telefone = ?";
         try (PreparedStatement pstmt = con.prepareStatement(sql))
         {
             pstmt.setString(1, telefone);
@@ -117,7 +140,7 @@ public class Clientes extends javax.swing.JFrame
     // Método para atualizar a tabela com todos os adms
     public void mostrarCliente()
     {
-        String sql = "SELECT id, nome, email, data_de_criacao FROM vendedores";
+        String sql = "SELECT id, nome, telefone, data_emissao FROM clientes";
         try (java.sql.Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(sql))
         {
 
@@ -128,8 +151,8 @@ public class Clientes extends javax.swing.JFrame
             {
                 int id = rs.getInt("id");
                 String nome = rs.getString("nome");
-                String email = rs.getString("email");
-                java.util.Date dataDeCriacao = rs.getDate("data_de_criacao");
+                String email = rs.getString("telefone");
+                java.util.Date dataDeCriacao = rs.getDate("data_emissao");
                 model.addRow(new Object[]
                 {
                     id, nome, email, dataDeCriacao
@@ -407,7 +430,7 @@ public class Clientes extends javax.swing.JFrame
         }
         else
         {
-            JOptionPane.showMessageDialog(this, "Selecione um produto para editar!");
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar!");
         }
     }//GEN-LAST:event_editarActionPerformed
 
@@ -419,16 +442,16 @@ public class Clientes extends javax.swing.JFrame
         {
             int id = (int) vendedores.getValueAt(selectedRow, 0);
 
-            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja apagar este vendedores?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja apagar este Cliente?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION)
             {
-                String sql = "DELETE FROM vendedoreses WHERE id = ?";
+                String sql = "DELETE FROM clientes WHERE id = ?";
 
                 try (PreparedStatement pstmt = con.prepareStatement(sql))
                 {
                     pstmt.setInt(1, id);
                     pstmt.executeUpdate();
-                    System.out.println("Vendedor apagado com sucesso!");
+                    System.out.println("Cliente apagado com sucesso!");
                     JOptionPane.showMessageDialog(this, "Vendedor Apagado com Sucesso!!!");
 
                     mostrarCliente();
