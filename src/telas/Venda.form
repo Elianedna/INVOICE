@@ -234,7 +234,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1030" y="540" width="120" height="40"/>
+              <AbsoluteConstraints x="1020" y="550" width="120" height="40"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -253,7 +253,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="50" y="560" width="-1" height="30"/>
+              <AbsoluteConstraints x="310" y="560" width="-1" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -418,7 +418,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="290" y="560" width="200" height="30"/>
+              <AbsoluteConstraints x="50" y="570" width="200" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -483,11 +483,12 @@
             <Property name="text" type="java.lang.String" value="Imprimir Factura"/>
           </Properties>
           <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="imprimirMouseClicked"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="imprimirActionPerformed"/>
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1280" y="540" width="190" height="40"/>
+              <AbsoluteConstraints x="1270" y="540" width="190" height="40"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -499,7 +500,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1280" y="330" width="180" height="30"/>
+              <AbsoluteConstraints x="1280" y="430" width="180" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -512,7 +513,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1380" y="230" width="-1" height="-1"/>
+              <AbsoluteConstraints x="1370" y="320" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -535,11 +536,14 @@
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="2">
-                <StringItem index="0" value="Cart&#xe3;o"/>
-                <StringItem index="1" value="Dinheiro"/>
+                <StringItem index="0" value="Dinheiro"/>
+                <StringItem index="1" value="Cart&#xe3;o"/>
               </StringArray>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pagamentosActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
@@ -583,7 +587,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1280" y="430" width="180" height="30"/>
+              <AbsoluteConstraints x="1280" y="340" width="180" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -592,11 +596,11 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Rockwell Condensed" size="18" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Valor Pago"/>
+            <Property name="text" type="java.lang.String" value="Troco"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1370" y="410" width="-1" height="-1"/>
+              <AbsoluteConstraints x="1410" y="410" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -624,7 +628,7 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1350" y="310" width="-1" height="-1"/>
+              <AbsoluteConstraints x="1360" y="230" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -657,7 +661,14 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="1020" y="460" width="160" height="30"/>
+              <AbsoluteConstraints x="1020" y="490" width="160" height="30"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="javax.swing.JTextField" name="codAdm">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="1020" y="430" width="180" height="30"/>
             </Constraint>
           </Constraints>
         </Component>
