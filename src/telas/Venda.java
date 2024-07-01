@@ -84,6 +84,26 @@ public class Venda extends javax.swing.JFrame
             }
         });
     }
+    
+     public boolean verificarSenhaAdministrador(String senhaDigitada) {
+          String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+    String dbUser = "root";
+    String dbPassword = "123456";
+        String sql = "SELECT senha FROM administradores WHERE senha = ?";
+        try (Connection conn = DriverManager.getConnection(connectionURL, dbUser, dbPassword);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, senhaDigitada);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao verificar senha do administrador: " + e.getMessage());
+        }
+        return false;
+    }
 
     private void inserirFaturaNoBanco()
     {
@@ -265,6 +285,7 @@ public class Venda extends javax.swing.JFrame
         double valorSemIVA = Double.parseDouble(ValorAPagar.getText());
         double iva = valorSemIVA * 0.07; // Calcula 7% de IVA
         double valorComIVA = valorSemIVA + iva;
+       this.ValorAPagar.setText(String.valueOf(valorComIVA));
         return valorComIVA;
     }
 
@@ -273,18 +294,30 @@ public class Venda extends javax.swing.JFrame
         double valorAPagar = Double.parseDouble(ValorAPagar.getText());
         double valorPago = Double.parseDouble(ValorPago.getText());
         double troco = valorPago - valorAPagar;
+        this.Troco.setText(String.valueOf(troco));
         return troco;
     }
 
     private void imprimirFactura()
     {
         DefaultTableModel modelVendas = (DefaultTableModel) factura.getModel();
+        LocalDate dataEmissao = LocalDate.now();
 
         String nomeVendedor = vendedor.getText();
         double valorAPagarComIVA = calcularValorAPagar();
         double trocoCalculado = calcularTroco();
         double valorPago = Double.parseDouble(ValorPago.getText());
         
+        String telefoneCliente = telefone.getText(); // Supondo que você tenha um JTextField chamado telefone
+    String nomeCliente = getNomeClienteByTelefone(telefoneCliente);
+        // Adiciona a linha na tabela 'factura' 
+        adicionarFactura(nomeVendedor, nomeCliente,dataEmissao, valorAPagarComIVA);
+    
+     if (nomeCliente.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Cliente não encontrado para o telefone informado.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+     
         try
         {
             PrinterJob job = PrinterJob.getPrinterJob();
@@ -404,6 +437,8 @@ public class Venda extends javax.swing.JFrame
                     return PAGE_EXISTS;
                 }
             });
+            
+            
 
             boolean doPrint = job.printDialog();
             if (doPrint)
@@ -416,6 +451,67 @@ public class Venda extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Erro ao imprimir o relatório de vendas: " + ex.getMessage(), "Erro de Impressão", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public void adicionarFactura(String nomeVendedor, String nomeCliente, LocalDate dataEmissao, double total) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+     String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+        String dbUser = "root";
+        String dbPassword = "123456";
+
+    try {
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/facturacao", dbUser, dbPassword);
+        String sql = "INSERT INTO factura (nome_vendedor, cliente, data_emissao, total) VALUES (?, ?, ?, ?)";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, nomeVendedor);
+        stmt.setString(2, nomeCliente);
+        stmt.setDate(3, new java.sql.Date(dataEmissao.getTime()));
+        stmt.setDouble(4, total);
+
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+    
+    public String getNomeClienteByTelefone(String telefone) {
+    String nomeCliente = "";
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
+    try {
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sua_base_de_dados", "seu_usuario", "sua_senha");
+        String sql = "SELECT nome FROM clientes WHERE telefone = ?";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, telefone);
+        rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            nomeCliente = rs.getString("nome");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return nomeCliente;
+}
+
 
     private void inserirItensFatura(Connection con, long facturaId) throws SQLException
     {
@@ -509,7 +605,7 @@ public class Venda extends javax.swing.JFrame
         pnome = new javax.swing.JTextField();
         pPreco = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        anular = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -532,7 +628,6 @@ public class Venda extends javax.swing.JFrame
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         CadastrarCliente = new javax.swing.JButton();
-        codAdm = new javax.swing.JTextField();
 
         jLabel9.setText("jLabel9");
 
@@ -594,6 +689,13 @@ public class Venda extends javax.swing.JFrame
         adicionarAFactura.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         adicionarAFactura.setForeground(new java.awt.Color(0, 51, 51));
         adicionarAFactura.setText("Adicionar à Factura");
+        adicionarAFactura.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                adicionarAFacturaMouseClicked(evt);
+            }
+        });
         adicionarAFactura.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -602,29 +704,37 @@ public class Venda extends javax.swing.JFrame
             }
         });
         jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 560, -1, 30));
+
+        vendedor.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                vendedorActionPerformed(evt);
+            }
+        });
         jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 179, 37));
         jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 179, 37));
         jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 179, 37));
         jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 179, 37));
 
-        jButton3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 51, 51));
-        jButton3.setText("Anular");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter()
+        anular.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        anular.setForeground(new java.awt.Color(0, 51, 51));
+        anular.setText(" Anular Factura");
+        anular.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                jButton3MouseClicked(evt);
+                anularMouseClicked(evt);
             }
         });
-        jButton3.addActionListener(new java.awt.event.ActionListener()
+        anular.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                jButton3ActionPerformed(evt);
+                anularActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 410, -1, -1));
+        jPanel1.add(anular, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 400, 180, -1));
 
         jLabel3.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 51));
@@ -719,7 +829,7 @@ public class Venda extends javax.swing.JFrame
                 imprimirActionPerformed(evt);
             }
         });
-        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 560, 190, 40));
+        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 560, 190, 40));
 
         Troco.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
         jPanel1.add(Troco, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 400, 180, 30));
@@ -728,7 +838,7 @@ public class Venda extends javax.swing.JFrame
         Trocol.setText("Valor Pago");
         jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 300, -1, -1));
 
-        telefone.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
+        telefone.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jPanel1.add(telefone, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 330, 180, 30));
 
         pagamentos.setFont(new java.awt.Font("Rockwell Condensed", 1, 12)); // NOI18N
@@ -786,8 +896,7 @@ public class Venda extends javax.swing.JFrame
                 CadastrarClienteMouseClicked(evt);
             }
         });
-        jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 470, 180, 30));
-        jPanel1.add(codAdm, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 450, 180, 30));
+        jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 470, 180, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -805,10 +914,10 @@ public class Venda extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
-    {//GEN-HEADEREND:event_jButton3ActionPerformed
+    private void anularActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_anularActionPerformed
+    {//GEN-HEADEREND:event_anularActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_anularActionPerformed
 
     private void adicionarAFacturaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_adicionarAFacturaActionPerformed
     {//GEN-HEADEREND:event_adicionarAFacturaActionPerformed
@@ -933,7 +1042,7 @@ public class Venda extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Não há dados para imprimir.", "Tabela Vazia", JOptionPane.WARNING_MESSAGE);
             return; // Sai do método sem imprimir
         }
-        if (this.Troco.getText().isEmpty() || this.ValorPago.getText().isEmpty())
+        if (this.Troco.getText().isEmpty() || this.ValorPago.getText().isEmpty()|| this.ValorAPagar.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos", "Campos Vazios", JOptionPane.WARNING_MESSAGE);
             return; // Sai do método sem imprimir
@@ -946,34 +1055,34 @@ public class Venda extends javax.swing.JFrame
         // TODO add your handling code here:
     }//GEN-LAST:event_pagamentosActionPerformed
 
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jButton3MouseClicked
-    {//GEN-HEADEREND:event_jButton3MouseClicked
+    private void anularMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_anularMouseClicked
+    {//GEN-HEADEREND:event_anularMouseClicked
         // TODO add your handling code here:
         
-        try
-        {
-            con = DriverManager.getConnection(connectionURL, dbUser, dbPassword);
-            System.out.println("Conexão bem-sucedida!");
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        String inputPassword = JOptionPane.showInputDialog(this, "Digite a palavra-passe do administrador:");
 
-        mostrarVendedor();
-        adicionarListenerTabela();
+    if (verificarSenhaAdministrador( inputPassword)) {
+        int selectedRow = factura.getSelectedRow();
+        if (selectedRow != -1) {
+            DefaultTableModel model = (DefaultTableModel) factura.getModel();
+            model.removeRow(selectedRow);
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum item selecionado para anular.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Palavra-passe incorreta.", "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_anularMouseClicked
 
-        vendedores.getSelectionModel().addListSelectionListener(new ListSelectionListener()
-        {
-            public void valueChanged(ListSelectionEvent event)
-            {
-                if (!event.getValueIsAdjusting() && vendedores.getSelectedRow() != -1)
-                {
-                    carregarVendedorSelecionado();
-                }
-            }
-        });
-    }//GEN-LAST:event_jButton3MouseClicked
+    private void vendedorActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_vendedorActionPerformed
+    {//GEN-HEADEREND:event_vendedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_vendedorActionPerformed
+
+    private void adicionarAFacturaMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_adicionarAFacturaMouseClicked
+    {//GEN-HEADEREND:event_adicionarAFacturaMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_adicionarAFacturaMouseClicked
 
 //   private void atualizarEstoque(int idProduto, int novaQuantidade) {
 //    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
@@ -1050,11 +1159,10 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JTextField ValorAPagar;
     private javax.swing.JTextField ValorPago;
     private javax.swing.JButton adicionarAFactura;
-    private javax.swing.JTextField codAdm;
+    private javax.swing.JButton anular;
     private javax.swing.JTable factura;
     private javax.swing.JButton facturaProForma;
     private javax.swing.JButton imprimir;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

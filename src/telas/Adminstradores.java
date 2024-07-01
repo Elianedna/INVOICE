@@ -116,6 +116,8 @@ public class Adminstradores extends javax.swing.JFrame
         }
         return false;
     }
+    
+   
 
     // Método para atualizar a tabela com todos os adms
     public void mostrarAdm()
