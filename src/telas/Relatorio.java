@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package telas;
+import classes.AdmLogado;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;

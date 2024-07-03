@@ -4,6 +4,7 @@
  */
 package telas;
 
+import classes.AdmLogado;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

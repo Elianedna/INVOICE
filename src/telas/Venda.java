@@ -4,6 +4,7 @@
  */
 package telas;
 
+import classes.UserLogado;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -62,10 +63,8 @@ public class Venda extends javax.swing.JFrame
         pPreco.setEditable(false);
         vendedor.setEditable(false);
         Troco.setEditable(false);
-        ValorAPagar.setEditable(false);
 
         exibirDadosTabela();
-
         vendedor.setText(UserLogado.getNome());
 
         productos1.addMouseListener(new java.awt.event.MouseAdapter()
@@ -84,22 +83,27 @@ public class Venda extends javax.swing.JFrame
             }
         });
     }
-    
-     public boolean verificarSenhaAdministrador(String senhaDigitada) {
-          String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
-    String dbUser = "root";
-    String dbPassword = "123456";
+
+    public boolean verificarSenhaAdministrador(String senhaDigitada)
+    {
+        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+        String dbUser = "root";
+        String dbPassword = "123456";
         String sql = "SELECT senha FROM administradores WHERE senha = ?";
-        try (Connection conn = DriverManager.getConnection(connectionURL, dbUser, dbPassword);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+        try (Connection conn = DriverManager.getConnection(connectionURL, dbUser, dbPassword); PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+
             pstmt.setString(1, senhaDigitada);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                if (rs.next())
+                {
                     return true;
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println("Erro ao verificar senha do administrador: " + e.getMessage());
         }
         return false;
@@ -184,20 +188,21 @@ public class Venda extends javax.swing.JFrame
 
                     // Cabeçalho
                     g2d.setColor(Color.GRAY);
-                    g2d.drawString("Factura ProForma", 10, y);
+                    g2d.drawString(" LOJA DA QUÉTURA, LDA", 10, y);
                     y += 20;
+                    
                     g2d.setColor(Color.BLACK);
-                    g2d.drawString("Data: " + java.time.LocalDate.now(), 10, y);
-                    y += 20;
-                    g2d.drawString("Nome Vendedor: " + nomeVendedor, 10, y);
-                    y += 20;
-                    g2d.drawString("Nome da Empresa: LOJA DA QUÉTURA", 10, y);
-                    y += 20;
-                    g2d.drawString("Localização: CENTRALIDADE ZANGO 8000, V 144", 10, y);
+                    g2d.drawString("CENTRALIDADE ZANGO 8000, V 144", 10, y);
                     y += 20;
                     g2d.drawString("LUANDA, ANGOLA", 10, y);
                     y += 20;
                     g2d.drawString("NIF:12345678900", 10, y);
+                    y += 20;
+                    g2d.drawString("FACTURA ProForma", 10, y);
+                    y += 20;
+                    g2d.drawString("Data: " + java.time.LocalDate.now(), 10, y);
+                    y += 20;
+                    g2d.drawString("Nome Cliente: " + nomeVendedor, 10, y);
                     y += 20;
                     g2d.drawString(" ", 10, y);
                     y += 20;
@@ -251,6 +256,22 @@ public class Venda extends javax.swing.JFrame
                         y += 20;
                     }
 
+                    g2d.drawString("=======================================================================================================", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString(" ", 10, y);
+                    y += 20;
+                    g2d.drawString(" 7% de IVA incluído na factura para cada producto. ", 10, y);
+                    y += 20;
+                    g2d.drawString("=======================================================================================================", 10, y);
+                    y += 20;
                     g2d.drawString(" ", 10, y);
                     y += 20;
                     g2d.drawString(" ", 10, y);
@@ -279,13 +300,14 @@ public class Venda extends javax.swing.JFrame
         }
     }
 
-    private double calcularValorAPagar()
+    /*private double calcularValorAPagar()
     {
         // Supondo que ValorAPagar seja o valor sem IVA
         double valorSemIVA = Double.parseDouble(ValorAPagar.getText());
         double iva = valorSemIVA * 0.07; // Calcula 7% de IVA
         double valorComIVA = valorSemIVA + iva;
-       this.ValorAPagar.setText(String.valueOf(valorComIVA));
+        ValorAPagar.setText(String.valueOf(valorComIVA));
+        System.out.println(valorComIVA);
         return valorComIVA;
     }
 
@@ -296,28 +318,37 @@ public class Venda extends javax.swing.JFrame
         double troco = valorPago - valorAPagar;
         this.Troco.setText(String.valueOf(troco));
         return troco;
-    }
-
+    }*/
     private void imprimirFactura()
     {
         DefaultTableModel modelVendas = (DefaultTableModel) factura.getModel();
-        LocalDate dataEmissao = LocalDate.now();
 
         String nomeVendedor = vendedor.getText();
-        double valorAPagarComIVA = calcularValorAPagar();
-        double trocoCalculado = calcularTroco();
-        double valorPago = Double.parseDouble(ValorPago.getText());
-        
+        // double valorAPagarComIVA = calcularValorAPagar();
+        // double trocoCalculado = calcularTroco();
+
+        // Verifica se o campo valorPago não está vazio
+        String valorPagoText = ValorPago.getText();
+        if (valorPagoText.isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "O campo Valor Pago está vazio.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double valorPago = Double.parseDouble(valorPagoText);
+
         String telefoneCliente = telefone.getText(); // Supondo que você tenha um JTextField chamado telefone
-    String nomeCliente = getNomeClienteByTelefone(telefoneCliente);
-        // Adiciona a linha na tabela 'factura' 
-        adicionarFactura(nomeVendedor, nomeCliente,dataEmissao, valorAPagarComIVA);
-    
-     if (nomeCliente.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Cliente não encontrado para o telefone informado.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-     
+        String nomeCliente = getNomeClienteByTelefone(telefoneCliente);
+
+        if (nomeCliente.isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Cliente não encontrado para o telefone informado.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Adiciona a linha na tabela 'factura'
+        // adicionarFactura(nomeVendedor, nomeCliente, LocalDate.now(), valorAPagarComIVA);
+        // Troco.setText(String.format("%.2f", trocoCalculado));
         try
         {
             PrinterJob job = PrinterJob.getPrinterJob();
@@ -346,6 +377,8 @@ public class Venda extends javax.swing.JFrame
                     y += 20;
                     g2d.drawString("Nome Vendedor: " + nomeVendedor, 10, y);
                     y += 20;
+                    g2d.drawString("Nome Cliente: " + nomeCliente, 10, y);
+                    y += 20;
                     g2d.drawString("Nome da Empresa: LOJA DA QUÉTURA", 10, y);
                     y += 20;
                     g2d.drawString("Localização: CENTRALIDADE ZANGO 8000, V 144", 10, y);
@@ -363,11 +396,13 @@ public class Venda extends javax.swing.JFrame
                     g2d.setColor(Color.GRAY);
                     g2d.drawString("ID", 10, y);
                     g2d.drawString("Nome Vendedor", 60, y);
-                    g2d.drawString("Preco", 200, y);
-                    g2d.drawString("Quantidade", 340, y);
+                    g2d.drawString("Cliente", 200, y);
+                    g2d.drawString("Data Emissão", 340, y);
                     g2d.drawString("Total", 460, y);
                     g2d.drawLine(10, y + 2, 500, y + 2);
-                    y += 20;
+                    y += 20;g2d.drawString("=======================================================================================================", 10, y);
+                    y += 30;
+                    
 
                     // Linhas da Tabela
                     g2d.setColor(Color.BLACK);
@@ -393,7 +428,7 @@ public class Venda extends javax.swing.JFrame
                                     g2d.drawString(value, 60, y); // Nome Vendedor
                                     break;
                                 case 2:
-                                    g2d.drawString(value, 200, y); // Nome Cliente
+                                    g2d.drawString(nomeCliente, 200, y); // Nome Cliente
                                     break;
                                 case 3:
                                     g2d.drawString(value, 340, y); // Data Emissão
@@ -405,113 +440,217 @@ public class Venda extends javax.swing.JFrame
                         }
                         y += 20;
                     }
-                    g2d.drawString(" ", 10, y);
-                    g2d.drawString("=======================================================================================================", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-
-                    g2d.drawString("Valor a Pagar (com 7% de IVA): " + valorAPagarComIVA, 10, y);
-                    y += 20;
-                    g2d.drawString("Valor a Pago: " + valorPago, 10, y);
-                    y += 20;
-                    g2d.drawString("Forma de Pagamento: ", 10, y);
-                    y += 20;
-                    // Adicionar Troco
-                    g2d.drawString("Troco: " + trocoCalculado, 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" ", 10, y);
-                    y += 20;
-                    g2d.drawString(" 7% de IVA incluído na factura para cada producto. ", 10, y);
-                    y += 20;
                     return PAGE_EXISTS;
+                    
                 }
             });
-            
-            
 
-            boolean doPrint = job.printDialog();
-            if (doPrint)
+            if (job.printDialog())
             {
                 job.print();
             }
+            
+            
         }
-        catch (PrinterException ex)
+        catch (PrinterException e)
         {
-            JOptionPane.showMessageDialog(null, "Erro ao imprimir o relatório de vendas: " + ex.getMessage(), "Erro de Impressão", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
-    
-    public void adicionarFactura(String nomeVendedor, String nomeCliente, LocalDate dataEmissao, double total) {
-    Connection conn = null;
-    PreparedStatement stmt = null;
-     String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+
+    public void adicionarFactura(String nomeVendedor, String nomeCliente, LocalDate dataEmissao, double total)
+    {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
         String dbUser = "root";
         String dbPassword = "123456";
+        System.out.println(total);
 
-    try {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/facturacao", dbUser, dbPassword);
-        String sql = "INSERT INTO factura (nome_vendedor, cliente, data_emissao, total) VALUES (?, ?, ?, ?)";
-        stmt = conn.prepareStatement(sql);
-        stmt.setString(1, nomeVendedor);
-        stmt.setString(2, nomeCliente);
-        stmt.setDate(3, new java.sql.Date(dataEmissao.getTime()));
-        stmt.setDouble(4, total);
+        try
+        {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/faturacao", dbUser, dbPassword);
+            String sql = "INSERT INTO factura (nome_vendedor, cliente, data_emissao, total) VALUES (?, ?, ?, ?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nomeVendedor);
+            stmt.setString(2, nomeCliente);
+            stmt.setDate(3, Date.valueOf(dataEmissao));
+            stmt.setDouble(4, total);
+            stmt.executeUpdate();
 
-        stmt.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (stmt != null) stmt.close();
-            if (conn != null) conn.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
-    }
-}
-
-    
-    public String getNomeClienteByTelefone(String telefone) {
-    String nomeCliente = "";
-    Connection conn = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-
-    try {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sua_base_de_dados", "seu_usuario", "sua_senha");
-        String sql = "SELECT nome FROM clientes WHERE telefone = ?";
-        stmt = conn.prepareStatement(sql);
-        stmt.setString(1, telefone);
-        rs = stmt.executeQuery();
-
-        if (rs.next()) {
-            nomeCliente = rs.getString("nome");
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+                if (conn != null)
+                {
+                    conn.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (conn != null) conn.close();
-        } catch (SQLException e) {
+
+    }
+
+    public String getNomeClienteByTelefone(String telefone)
+    {
+        String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
+        String dbUser = "root";
+        String dbPassword = "123456";
+        String nomeCliente = "";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try
+        {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/faturacao", dbUser, dbPassword);
+            String sql = "SELECT nome FROM clientes WHERE telefone = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, telefone);
+            rs = stmt.executeQuery();
+
+            if (rs.next())
+            {
+                nomeCliente = rs.getString("nome");
+            }
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
         }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+                if (conn != null)
+                {
+                    conn.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return nomeCliente;
     }
-    return nomeCliente;
-}
 
+    // Método para calcular o troco
+    private void calcularTroco()
+    {
+        String precoText = pPreco.getText();
+        String quantidadeText = quantidade.getText();
+        String valorPagoTxt = ValorPago.getText();
+
+        // Realize a validação e conversão dos valores conforme você já implementou
+        double preco;
+        int quantidade;
+
+        try
+        {
+            quantidade = Integer.parseInt(quantidadeText);
+            if (quantidade <= 0)
+            {
+                JOptionPane.showMessageDialog(this, "Por favor, insira uma quantidade válida (maior que zero).", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        catch (NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para a quantidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try
+        {
+            preco = Double.parseDouble(precoText);
+        }
+        catch (NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o preço.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int selectedRow = productos1.getSelectedRow();
+        if (selectedRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um produto da tabela.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel modelProdutos = (DefaultTableModel) productos1.getModel();
+        int idProduto = (int) modelProdutos.getValueAt(selectedRow, 0);
+        int quantidadeEmEstoque = (int) modelProdutos.getValueAt(selectedRow, 4);
+
+        if (quantidade > quantidadeEmEstoque)
+        {
+            JOptionPane.showMessageDialog(this, "Quantidade insuficiente em estoque.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double total = preco * quantidade;
+
+        // Adicionar o produto à tabela factura apenas se ainda não estiver lá
+        boolean produtoJaAdicionado = false;
+        DefaultTableModel modelFactura = (DefaultTableModel) factura.getModel();
+        for (int i = 0; i < modelFactura.getRowCount(); i++)
+        {
+            int id = (int) modelFactura.getValueAt(i, 0);
+            if (id == idProduto)
+            {
+                produtoJaAdicionado = true;
+                break;
+            }
+        }
+
+        /*if (!produtoJaAdicionado) {
+        adicionarProdutoAFactura(idProduto, pnome.getText(), preco, quantidade, total);
+    }*/
+        double totalGlobal = 0.0;
+        double troco = 0.0;
+        double valorPagoD = 0.0;
+
+        try
+        {
+            valorPagoD = Double.parseDouble(valorPagoTxt);
+        }
+        catch (NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número válido para o Valor Pago.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Calcular o total global
+        for (int i = 0; i < modelFactura.getRowCount(); i++)
+        {
+            totalGlobal += (double) modelFactura.getValueAt(i, 4);
+        }
+
+        // Calcular o troco
+        troco = valorPagoD - totalGlobal;
+        this.Troco.setText(String.valueOf(troco));
+    }
 
     private void inserirItensFatura(Connection con, long facturaId) throws SQLException
     {
@@ -604,7 +743,7 @@ public class Venda extends javax.swing.JFrame
         vendedor = new javax.swing.JTextField();
         pnome = new javax.swing.JTextField();
         pPreco = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        quantidade = new javax.swing.JTextField();
         anular = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -624,10 +763,9 @@ public class Venda extends javax.swing.JFrame
         jLabel12 = new javax.swing.JLabel();
         ValorPago = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        ValorAPagar = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         CadastrarCliente = new javax.swing.JButton();
+        Pagamento = new javax.swing.JButton();
 
         jLabel9.setText("jLabel9");
 
@@ -684,6 +822,13 @@ public class Venda extends javax.swing.JFrame
         jLabel2.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 51, 51));
         jLabel2.setText("00.0 KZS");
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jLabel2MouseClicked(evt);
+            }
+        });
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 590, -1, -1));
 
         adicionarAFactura.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
@@ -703,7 +848,7 @@ public class Venda extends javax.swing.JFrame
                 adicionarAFacturaActionPerformed(evt);
             }
         });
-        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 560, -1, 30));
+        jPanel1.add(adicionarAFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 570, -1, 30));
 
         vendedor.addActionListener(new java.awt.event.ActionListener()
         {
@@ -715,7 +860,7 @@ public class Venda extends javax.swing.JFrame
         jPanel1.add(vendedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 179, 37));
         jPanel1.add(pnome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 179, 37));
         jPanel1.add(pPreco, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 179, 37));
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 179, 37));
+        jPanel1.add(quantidade, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 179, 37));
 
         anular.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         anular.setForeground(new java.awt.Color(0, 51, 51));
@@ -829,14 +974,14 @@ public class Venda extends javax.swing.JFrame
                 imprimirActionPerformed(evt);
             }
         });
-        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 560, 190, 40));
+        jPanel1.add(imprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1270, 530, 190, 40));
 
         Troco.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
         jPanel1.add(Troco, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 400, 180, 30));
 
         Trocol.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         Trocol.setText("Valor Pago");
-        jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 300, -1, -1));
+        jPanel1.add(Trocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(1370, 230, -1, -1));
 
         telefone.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jPanel1.add(telefone, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 330, 180, 30));
@@ -861,25 +1006,18 @@ public class Venda extends javax.swing.JFrame
         jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 310, -1, -1));
 
         ValorPago.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
-        jPanel1.add(ValorPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 320, 180, 30));
+        ValorPago.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                ValorPagoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ValorPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 260, 180, 30));
 
         jLabel13.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
         jLabel13.setText("Troco");
         jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1410, 380, -1, -1));
-
-        ValorAPagar.setFont(new java.awt.Font("Rockwell Condensed", 0, 12)); // NOI18N
-        ValorAPagar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                ValorAPagarActionPerformed(evt);
-            }
-        });
-        jPanel1.add(ValorAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 250, 180, 30));
-
-        jLabel14.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
-        jLabel14.setText("Valor a Pagar");
-        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1360, 230, -1, -1));
 
         jLabel15.setFont(new java.awt.Font("Rockwell Condensed", 1, 24)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 51, 51));
@@ -897,6 +1035,26 @@ public class Venda extends javax.swing.JFrame
             }
         });
         jPanel1.add(CadastrarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 470, 180, 30));
+
+        Pagamento.setBackground(new java.awt.Color(0, 102, 102));
+        Pagamento.setFont(new java.awt.Font("Rockwell Condensed", 1, 18)); // NOI18N
+        Pagamento.setForeground(new java.awt.Color(51, 0, 51));
+        Pagamento.setText("PAGAR");
+        Pagamento.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                PagamentoMouseClicked(evt);
+            }
+        });
+        Pagamento.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                PagamentoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Pagamento, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 530, 90, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -925,7 +1083,8 @@ public class Venda extends javax.swing.JFrame
         // TODO add your handling code here
         String nomeProduto = pnome.getText();
         String precoText = pPreco.getText();
-        String quantidadeText = jTextField4.getText();
+        String quantidadeText = quantidade.getText();
+        String valorPagoTxt = ValorPago.getText();
 
         if (nomeProduto.isEmpty() || precoText.isEmpty() || quantidadeText.isEmpty())
         {
@@ -985,14 +1144,14 @@ public class Venda extends javax.swing.JFrame
         });
 
         double totalGlobal = 0.0;
+//        double troco = 0.0;
+//        double valorPagoD = 0.0;
         for (int i = 0; i < modelFactura.getRowCount(); i++)
         {
             totalGlobal += (double) modelFactura.getValueAt(i, 4);
         }
         jLabel2.setText(totalGlobal + " KZS");
 
-        // Atualiza o estoque no banco de dados e na tabela
-        // atualizarEstoque(idProduto, quantidadeEmEstoque - quantidade);
 
     }//GEN-LAST:event_adicionarAFacturaActionPerformed
 
@@ -1008,11 +1167,6 @@ public class Venda extends javax.swing.JFrame
     {//GEN-HEADEREND:event_imprimirActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_imprimirActionPerformed
-
-    private void ValorAPagarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ValorAPagarActionPerformed
-    {//GEN-HEADEREND:event_ValorAPagarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ValorAPagarActionPerformed
 
     private void CadastrarClienteMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_CadastrarClienteMouseClicked
     {//GEN-HEADEREND:event_CadastrarClienteMouseClicked
@@ -1042,7 +1196,7 @@ public class Venda extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, "Não há dados para imprimir.", "Tabela Vazia", JOptionPane.WARNING_MESSAGE);
             return; // Sai do método sem imprimir
         }
-        if (this.Troco.getText().isEmpty() || this.ValorPago.getText().isEmpty()|| this.ValorAPagar.getText().isEmpty())
+        if (this.Troco.getText().isEmpty() || this.ValorPago.getText().isEmpty())
         {
             JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos", "Campos Vazios", JOptionPane.WARNING_MESSAGE);
             return; // Sai do método sem imprimir
@@ -1058,20 +1212,26 @@ public class Venda extends javax.swing.JFrame
     private void anularMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_anularMouseClicked
     {//GEN-HEADEREND:event_anularMouseClicked
         // TODO add your handling code here:
-        
+
         String inputPassword = JOptionPane.showInputDialog(this, "Digite a palavra-passe do administrador:");
 
-    if (verificarSenhaAdministrador( inputPassword)) {
-        int selectedRow = factura.getSelectedRow();
-        if (selectedRow != -1) {
-            DefaultTableModel model = (DefaultTableModel) factura.getModel();
-            model.removeRow(selectedRow);
-        } else {
-            JOptionPane.showMessageDialog(this, "Nenhum item selecionado para anular.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (verificarSenhaAdministrador(inputPassword))
+        {
+            int selectedRow = factura.getSelectedRow();
+            if (selectedRow != -1)
+            {
+                DefaultTableModel model = (DefaultTableModel) factura.getModel();
+                model.removeRow(selectedRow);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Nenhum item selecionado para anular.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Palavra-passe incorreta.", "Erro", JOptionPane.ERROR_MESSAGE);
-    }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Palavra-passe incorreta.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_anularMouseClicked
 
     private void vendedorActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_vendedorActionPerformed
@@ -1083,6 +1243,28 @@ public class Venda extends javax.swing.JFrame
     {//GEN-HEADEREND:event_adicionarAFacturaMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_adicionarAFacturaMouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jLabel2MouseClicked
+    {//GEN-HEADEREND:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void PagamentoActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_PagamentoActionPerformed
+    {//GEN-HEADEREND:event_PagamentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PagamentoActionPerformed
+
+    private void PagamentoMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_PagamentoMouseClicked
+    {//GEN-HEADEREND:event_PagamentoMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_PagamentoMouseClicked
+
+    private void ValorPagoActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ValorPagoActionPerformed
+    {//GEN-HEADEREND:event_ValorPagoActionPerformed
+        // TODO add your handling code here:
+        calcularTroco();
+    }//GEN-LAST:event_ValorPagoActionPerformed
 
 //   private void atualizarEstoque(int idProduto, int novaQuantidade) {
 //    String connectionURL = "jdbc:mysql://localhost:3306/faturacao";
@@ -1154,9 +1336,9 @@ public class Venda extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CadastrarCliente;
+    private javax.swing.JButton Pagamento;
     private javax.swing.JTextField Troco;
     private javax.swing.JLabel Trocol;
-    private javax.swing.JTextField ValorAPagar;
     private javax.swing.JTextField ValorPago;
     private javax.swing.JButton adicionarAFactura;
     private javax.swing.JButton anular;
@@ -1168,7 +1350,6 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1182,11 +1363,11 @@ public class Venda extends javax.swing.JFrame
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField pPreco;
     private javax.swing.JComboBox<String> pagamentos;
     private javax.swing.JTextField pnome;
     private javax.swing.JTable productos1;
+    private javax.swing.JTextField quantidade;
     private javax.swing.JTextField telefone;
     private javax.swing.JTextField vendedor;
     // End of variables declaration//GEN-END:variables
